@@ -200,6 +200,47 @@
             color: white;
         }
 
+        /* Bouton d'ouverture */
+        .btn-map-select {
+            display: block; margin: 15px auto;
+            padding: 8px 15px; background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px;
+            color: var(--text-color); cursor: pointer; backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        .btn-map-select:hover { background: var(--accent); color: white; transform: scale(1.05); }
+
+        /* La Modale Plein Écran */
+        #map-modal {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Fond sombre derrière */
+            z-index: 3000;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Le contenu de la modale */
+        .map-modal-content {
+            width: 90%; height: 80%;
+            max-width: 1000px;
+            display: flex; flex-direction: column;
+            padding: 20px;
+        }
+
+        /* La carte de sélection */
+        #selection-map {
+            flex-grow: 1; /* Prend toute la place disponible */
+            width: 100%;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex; justify-content: space-around; align-items: center;
+        }
+
         /* --- BOUTON DÉCOLLAGE --- */
         .btn-takeoff {
             position: fixed; bottom: 40px; right: 40px;
@@ -314,6 +355,9 @@
             <span> vers </span>
             <select id="destination"></select>
         </div>
+
+        <button class="btn-map-select" onclick="openSelectionMap()">🌍 Choisir sur la carte</button>
+
         <div class="duration-picker">
             <p>Ou définissez un temps de focus :</p>
             <div class="roulette-container">
@@ -323,6 +367,20 @@
             <button class="btn-random" onclick="proposeRandomFlight()">🎲 Proposer un trajet aléatoire</button>
         </div>
         <p id="estimated-time" style="color: var(--accent); font-weight: bold; margin-top: 20px;">Durée : -- min</p>
+    </div>
+
+    <div id="map-modal" class="hidden">
+        <div class="map-modal-content glass-card">
+            <h3>📍 Créez votre plan de vol</h3>
+            <p>Cliquez sur un aéroport de départ, puis un d'arrivée.</p>
+        
+            <div id="selection-map"></div>
+        
+            <div class="modal-buttons">
+                <button class="btn-return" onclick="closeSelectionMap()">Annuler</button>
+                <button id="btn-confirm-route" class="btn-takeoff hidden" onclick="confirmRouteSelection()" style="position: static; padding: 10px 20px;">Valider ce trajet</button>
+            </div>
+        </div>
     </div>
 
     <button class="btn-takeoff" id="btn-go" onclick="takeOff()">DÉCOLLAGE</button>
@@ -513,9 +571,12 @@
             { id: "LIL", name: "Lille Lesquin", lat: 50.5619, lon: 3.0894 },
             { id: "RTM", name: "Rotterdam The Hague", lat: 51.9569, lon: 4.4372 },
             { id: "EIN", name: "Eindhoven Airport", lat: 51.4501, lon: 5.3745 },
+            { id: "SXB", name: "Strasbourg Entzheim", lat: 48.5383, lon: 7.6282 },
+            { id: "BSL", name: "Bâle-Mulhouse", lat: 47.5900, lon: 7.5292 },
 
-            // --- EUROPE --- 
+            // --- EUROPE (AJOUTS) --- 
             { id: "LHR", name: "Londres Heathrow", lat: 51.4700, lon: -0.4543 },
+            { id: "LGW", name: "Londres Gatwick", lat: 51.1481, lon: -0.1903 },
             { id: "MAD", name: "Madrid Barajas", lat: 40.4839, lon: -3.5680 },
             { id: "BER", name: "Berlin Brandenburg", lat: 52.3667, lon: 13.5033 },
             { id: "FCO", name: "Rome Fiumicino", lat: 41.8003, lon: 12.2389 },
@@ -533,20 +594,91 @@
             { id: "BCN", name: "Barcelone El Prat", lat: 41.2974, lon: 2.0833 },
             { id: "PMI", name: "Palma de Majorque", lat: 39.5517, lon: 2.7388 },
             { id: "MRS", name: "Marseille Provence", lat: 43.4367, lon: 5.2150 },
+            { id: "CPH", name: "Copenhague Kastrup", lat: 55.6180, lon: 12.6508 },
+            { id: "HEL", name: "Helsinki Vantaa", lat: 60.3172, lon: 24.9633 },
+            { id: "IST", name: "Istanbul Airport", lat: 41.2753, lon: 28.7519 },
+            { id: "DME", name: "Moscou Domodedovo", lat: 55.4086, lon: 37.9061 },
+            { id: "KEF", name: "Reykjavik Keflavik", lat: 63.9850, lon: -22.6056 },
+            { id: "VCE", name: "Venise Marco Polo", lat: 45.5053, lon: 12.3519 },
+            { id: "SOU", name: "Southampton", lat: 50.9503, lon: -1.3567 },
+            { id: "BOH", name: "Bournemouth", lat: 50.7800, lon: -1.8425 },
+            { id: "LIN", name: "Milan Linate", lat: 45.4451, lon: 9.2767 },
+            { id: "MXP", name: "Milan Malpensa", lat: 45.6300, lon: 8.7231 },
+            { id: "STN", name: "Londres Stansted", lat: 51.8860, lon: 0.2389 },
+            { id: "LCY", name: "Londres City", lat: 51.5053, lon: 0.0553 },
+            { id: "CIA", name: "Rome Ciampino", lat: 41.7994, lon: 12.5949 },
+            { id: "DUS", name: "Düsseldorf Intl", lat: 51.2895, lon: 6.7668 },
+            { id: "CGN", name: "Cologne/Bonn", lat: 50.8659, lon: 7.1427 },
+            { id: "LYS", name: "Lyon Saint-Exupéry", lat: 45.7256, lon: 5.0811 },
+            { id: "TXL", name: "Berlin Tegel", lat: 52.5597, lon: 13.2877 }, 
+            { id: "LEJ", name: "Leipzig/Halle", lat: 51.4324, lon: 12.2416 },
 
-            // --- INTERNATIONAL (Long-courriers) ---
+            // --- AFRIQUE (AJOUTS) ---
+            { id: "CAI", name: "Le Caire Intl", lat: 30.1219, lon: 31.4056 },
+            { id: "JNB", name: "Johannesburg O.R. Tambo", lat: -26.1367, lon: 28.2461 },
+            { id: "CMN", name: "Casablanca Mohammed V", lat: 33.3675, lon: -7.5899 },
+            { id: "NBO", name: "Nairobi Jomo Kenyatta", lat: -1.3192, lon: 36.9275 },
+            { id: "CPT", name: "Le Cap Intl", lat: -33.9715, lon: 18.6021 },
+            { id: "DSS", name: "Dakar Blaise Diagne", lat: 14.6711, lon: -17.0673 },
+            { id: "RAK", name: "Marrakech-Ménara", lat: 31.6069, lon: -8.0363 },
+            { id: "RUN", name: "La Réunion Roland-Garros", lat: -20.8872, lon: 55.5103 },
+            { id: "MRU", name: "Maurice Sir Seewoosagur", lat: -20.4300, lon: 57.6836 },
+
+            // --- AMÉRIQUE DU NORD (AJOUTS) ---
             { id: "JFK", name: "New York JFK", lat: 40.6413, lon: -73.7781 },
-            { id: "DXB", name: "Dubaï International", lat: 25.2532, lon: 55.3657 },
-            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798 },
-            { id: "SIN", name: "Singapour Changi", lat: 1.3644, lon: 103.9915 },
             { id: "LAX", name: "Los Angeles Intl", lat: 33.9416, lon: -118.4085 },
-            { id: "SYD", name: "Sydney Kingsford Smith", lat: -33.9399, lon: 151.1753 }
+            { id: "ORD", name: "Chicago O'Hare", lat: 41.9742, lon: -87.9073 },
+            { id: "MIA", name: "Miami Intl", lat: 25.7959, lon: -80.2870 },
+            { id: "YYZ", name: "Toronto Pearson", lat: 43.6777, lon: -79.6248 },
+            { id: "YVR", name: "Vancouver Intl", lat: 49.1967, lon: -123.1815 },
+            { id: "MEX", name: "Mexico City Benito Juárez", lat: 19.4361, lon: -99.0719 },
+            { id: "SFO", name: "San Francisco Intl", lat: 37.6213, lon: -122.3790 },
+            { id: "DEN", name: "Denver Intl", lat: 39.8561, lon: -104.6737 },
+            { id: "YUL", name: "Montréal-Trudeau", lat: 45.4657, lon: -73.7455 },
+            { id: "HNL", name: "Honolulu (Hawaï)", lat: 21.3186, lon: -157.9225 },
+            { id: "LAS", name: "Las Vegas McCarran", lat: 36.0840, lon: -115.1537 },
+
+            // --- AMÉRIQUE DU SUD (AJOUTS) ---
+            { id: "GRU", name: "São Paulo Guarulhos", lat: -23.4356, lon: -46.4731 },
+            { id: "EZE", name: "Buenos Aires Ezeiza", lat: -34.8222, lon: -58.5358 },
+            { id: "BOG", name: "Bogota El Dorado", lat: 4.7016, lon: -74.1469 },
+            { id: "LIM", name: "Lima Jorge Chávez", lat: -12.0219, lon: -77.1143 },
+            { id: "SCL", name: "Santiago Comodoro Arturo", lat: -33.3930, lon: -70.7858 },
+            { id: "GIG", name: "Rio de Janeiro Galeão", lat: -22.8100, lon: -43.2506 },
+
+            // --- ASIE (AJOUTS) ---
+            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798 },
+            { id: "NRT", name: "Tokyo Narita", lat: 35.7720, lon: 140.3929 },
+            { id: "ICN", name: "Séoul Incheon", lat: 37.4602, lon: 126.4407 },
+            { id: "SIN", name: "Singapour Changi", lat: 1.3644, lon: 103.9915 },
+            { id: "HKG", name: "Hong Kong Intl", lat: 22.3080, lon: 113.9185 },
+            { id: "DXB", name: "Dubaï Intl", lat: 25.2532, lon: 55.3657 },
+            { id: "BKK", name: "Bangkok Suvarnabhumi", lat: 13.6900, lon: 100.7501 },
+            { id: "DEL", name: "New Delhi Indira Gandhi", lat: 28.5562, lon: 77.1000 },
+            { id: "BJS", name: "Pékin Capital", lat: 40.0799, lon: 116.6031 },
+            { id: "DOH", name: "Doha Hamad", lat: 25.2731, lon: 51.6081 },
+            { id: "KUL", name: "Kuala Lumpur Intl", lat: 2.7456, lon: 101.7072 },
+            { id: "DPS", name: "Bali Denpasar", lat: -8.7482, lon: 115.1672 },
+            { id: "SGN", name: "Hô Chi Minh-Ville", lat: 10.8185, lon: 106.6588 },
+            { id: "MLE", name: "Malé (Maldives)", lat: 4.1918, lon: 73.5291 },
+
+            // --- OCÉANIE ---
+            { id: "SYD", name: "Sydney Kingsford Smith", lat: -33.9399, lon: 151.1753 },
+            { id: "AKL", name: "Auckland Airport", lat: -37.0082, lon: 174.7850 },
+            { id: "MEL", name: "Melbourne Airport", lat: -37.6690, lon: 144.8410 },
+            { id: "BNE", name: "Brisbane Airport", lat: -27.3842, lon: 153.1175 },
+            { id: "PPT", name: "Tahiti Faa'a", lat: -17.5569, lon: -149.6060 },
+            { id: "NOU", name: "Nouméa La Tontouta", lat: -22.0145, lon: 166.2130 },
+            { id: "OOL", name: "Gold Coast", lat: -28.1644, lon: 153.5047 }
         ];
 
         let map, planeMarker, flightLine;
         let timeLeft, totalTime, timerInterval;
         let startCoords, endCoords;
 
+        // Trie les aéroports par ordre alphabétique
+        airports.sort((a, b) => a.name.localeCompare(b.name));
+        
         const originSelect = document.getElementById('origin');
         const destSelect = document.getElementById('destination');
 
@@ -564,6 +696,16 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
+        function getFlightDuration(lat1, lon1, lat2, lon2) {
+            const dist = calculateDistance(lat1, lon1, lat2, lon2);
+            const rawFlightTime = (dist / 800) * 60;
+
+            // On ajoute 15% de temps pour les manoeuvres (minimum 2 minutes pour la sécurité)
+            const bufferProportionnel = Math.max(2, rawFlightTime * 0.15);
+            
+            return Math.round(rawFlightTime + bufferProportionnel);
+        }
+
         function updateDurationDisplay() {
             const a = airports.find(x => x.id === originSelect.value);
             const b = airports.find(x => x.id === destSelect.value);
@@ -571,18 +713,7 @@
                 document.getElementById('estimated-time').textContent = "Choisissez une destination différente";
                 return;
             }
-            const dist = calculateDistance(a.lat, a.lon, b.lat, b.lon);
-
-            // On définit les paliers : [distance_max, temps_buffer]
-            const thresholds = [
-                { limit: 50,  buffer: 2 },   // Jusqu'à 50km -> 2 min
-                { limit: 200, buffer: 10 },  // De 50 à 200km -> 10 min
-                { limit: 500, buffer: 15 },  // De 200 à 500km -> 15 min
-                { limit: Infinity, buffer: 25 } // Au-delà -> 25 min
-            ];
-            // On trouve le premier palier qui correspond à notre distance
-            const buffer = thresholds.find(t => dist < t.limit).buffer;
-            const totalMinutes = Math.max(1, Math.round((dist / 800) * 60 + buffer));
+            const totalMinutes = getFlightDuration(a.lat, a.lon, b.lat, b.lon);
 
             // On convertit les minutes en secondes pour notre fonction de formatage
             const timeString = formatTimeHHMMSS(totalMinutes * 60);
@@ -593,13 +724,16 @@
         updateDurationDisplay();
 
         function proposeRandomFlight() {
-            const targetHours = parseInt(document.getElementById('pick-hours').value);
-            const targetMins = parseInt(document.getElementById('pick-mins').value);
+            const targetHours = parseInt(document.getElementById('pick-hours').value) || 0;
+            const targetMins = parseInt(document.getElementById('pick-mins').value) || 0;
             const targetTotalMins = (targetHours * 60) + targetMins;
 
-            if (targetTotalMins === 0) return alert("Choisissez une durée supérieure à 0 !");
+            if (targetTotalMins <= 0) return alert("Choisissez une durée supérieure à 0 !");
 
             let validFlights = [];
+
+            // Définition de la marge d'erreur : 20% du temps demandé (minimum 2 min de battement)
+            const margin = Math.max(2, targetTotalMins * 0.2);
 
             // On parcourt tous les aéroports de départ possibles
             for (let i = 0; i < airports.length; i++) {
@@ -607,24 +741,26 @@
                 for (let j = 0; j < airports.length; j++) {
                     if (i === j) continue; // Pas de vol vers la même ville
 
-                    const start = airports[i];
-                    const end = airports[j];
-            
+                    const startApt = airports[i];
+                    const endApt = airports[j];
                     // On calcule la durée de ce trajet
-                    const dist = calculateDistance(start.lat, start.lon, end.lat, end.lon);
-                    const flightMins = Math.round((dist / 800) * 60 + 20);
+                    const flightMins = getFlightDuration(startApt.lat, startApt.lon, endApt.lat, endApt.lon);
 
-                    // On vérifie si ça correspond à la durée demandée (marge de +/- 15 min)
-                    if (Math.abs(flightMins - targetTotalMins) <= 15) {
-                        validFlights.push({ start: start.id, end: end.id });
+                    // Vérification avec la marge dynamique
+                    if (Math.abs(flightMins - targetTotalMins) <= margin) {
+                       validFlights.push({ start: startApt.id, end: endApt.id, diff: Math.abs(flightMins - targetTotalMins) });
                     }
                 }
             }
 
             if (validFlights.length > 0) {
+                // Optionnel : on trie pour prendre les 10 vols les plus proches du temps demandé
+                // cela évite de proposer un vol de 8 min quand on demande 5 min s'il existe un vol de 5 min.
+                validFlights.sort((a, b) => a.diff - b.diff);
+                const topChoices = validFlights.slice(0, 15);
                 // --- LE POINT ALÉATOIRE ---
                 // On choisit un trajet au hasard parmi ceux qui correspondent
-                const randomChoice = validFlights[Math.floor(Math.random() * validFlights.length)];
+                const randomChoice = topChoices[Math.floor(Math.random() * topChoices.length)];
         
                 // On met à jour les sélecteurs de la page d'accueil
                 document.getElementById('origin').value = randomChoice.start;
@@ -644,6 +780,140 @@
             }
         }
 
+        let selectMap; // Variable pour la carte de sélection
+        let selectMarkers = []; // Pour stocker les marqueurs
+        let flightPathLine = null; // La ligne du trajet
+        let tempOrigin = null;
+        let tempDest = null;
+
+        // Ouvre la modale et initialise la carte si nécessaire
+        function openSelectionMap() {
+            document.getElementById('map-modal').classList.remove('hidden');
+    
+            // Si la carte n'existe pas encore, on la crée
+            if (!selectMap) {
+                selectMap = L.map('selection-map').setView([20, 0], 2);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '© OpenStreetMap, © CartoDB'
+                }).addTo(selectMap);
+        
+                // On ajoute les aéroports
+                displayAirportsOnMap();
+            }
+    
+            // Important : Leaflet a besoin de savoir que la taille a changé car elle était cachée
+            setTimeout(() => { selectMap.invalidateSize(); }, 100);
+    
+            resetSelectionMap();
+        }
+
+        function closeSelectionMap() {
+            document.getElementById('map-modal').classList.add('hidden');
+        }
+
+        // Affiche tous les points bleus
+        function displayAirportsOnMap() {
+            airports.forEach(airport => {
+                const marker = L.circleMarker([airport.lat, airport.lon], {
+                    color: '#1a2a6c', fillColor: '#1778bd',
+                    fillOpacity: 0.8, radius: 6
+                }).addTo(selectMap);
+        
+                // Ajout d'une propriété custom pour retrouver l'ID
+                marker.airportId = airport.id;
+                marker.airportName = airport.name;
+
+                // Interaction au clic
+                marker.on('click', () => handleMarkerClick(marker, airport));
+                selectMarkers.push(marker);
+            });
+        }
+
+        // ---**  Gère la logique des 2 clics (Départ -> Arrivée)  **---
+        function handleMarkerClick(marker, data) {
+            // Cas 1: Sélection du Départ
+            if (!tempOrigin) {
+                tempOrigin = data;
+        
+                // Changement visuel : Vert pour départ
+                marker.setStyle({ color: 'green', fillColor: '#2ecc71', radius: 10 });
+                marker.bindPopup(`🛫 Départ : ${data.name}`).openPopup();
+        
+            // Cas 2: Sélection de l'Arrivée (si différent du départ)
+            } else if (!tempDest && data.id !== tempOrigin.id) {
+                tempDest = data;
+        
+                // Changement visuel : Rouge pour arrivée
+                marker.setStyle({ color: 'red', fillColor: '#e74c3c', radius: 10 });
+        
+                // Calcul du temps (réutilisation de ta logique)
+                const dist = calculateDistance(tempOrigin.lat, tempOrigin.lon, tempDest.lat, tempDest.lon);
+                // Récupération de ta logique de buffer (simplifiée ici pour l'affichage)
+                const rules = [{ d: 50, b: 2 }, { d: 200, b: 10 }, { d: 500, b: 15 }, { d: Infinity, b: 25 }];
+                const ruleFound = rules.find(r => dist < r.d);
+                const buffer = ruleFound ? ruleFound.b : 25;
+                const time = Math.round((dist / 800) * 60 + buffer);
+
+                // Affiche la ligne
+                if (flightPathLine) selectMap.removeLayer(flightPathLine);
+                    flightPathLine = L.polyline([[tempOrigin.lat, tempOrigin.lon], [tempDest.lat, tempDest.lon]], {
+                    color: 'var(--accent)', weight: 3, dashArray: '10, 10'
+                }).addTo(selectMap);
+            
+
+                // Popup finale avec le temps
+                marker.bindPopup(`
+                    <b>🛬 Arrivée : ${data.name}</b><br>
+                    Distance : ${Math.round(dist)} km<br>
+                    ⏱️ Durée de focus : <b>${time} min</b>
+                `).openPopup();
+
+                // Affiche le bouton de confirmation
+                document.getElementById('btn-confirm-route').classList.remove('hidden');
+
+            // Cas 3: Reset si on clique ailleurs ou pour recommencer
+            } else {
+                resetSelectionMap();
+                handleMarkerClick(marker, data); // On relance le clic comme si c'était le premier
+            }
+        }
+
+        // Reset visuel
+        function resetSelectionMap() {
+            tempOrigin = null;
+            tempDest = null;
+            if (flightPathLine) selectMap.removeLayer(flightPathLine);
+            document.getElementById('btn-confirm-route').classList.add('hidden');
+            selectMap.closePopup();
+    
+            // Remet tous les marqueurs à zéro
+            selectMarkers.forEach(m => {
+                m.setStyle({ color: '#1a2a6c', fillColor: '#1778bd', radius: 6 });
+            });
+        }
+
+        // Valide et met à jour l'écran principal
+        function confirmRouteSelection() {
+            console.log("Validation du trajet..."); // Pour vérifier dans la console (F12)
+            if (tempOrigin && tempDest) {
+                try {
+                    // 1. Mise à jour des sélecteurs
+                    document.getElementById('origin').value = tempOrigin.id;
+                    document.getElementById('destination').value = tempDest.id;
+
+                    // 2. Mise à jour de l'affichage du temps
+                    updateDurationDisplay();
+
+                } catch (e) {
+                    console.error("Erreur lors de la mise à jour des champs :", e);
+                }
+        
+                closeSelectionMap();
+            } else {
+                alert("Veuillez sélectionner un départ (vert) et une arrivée (rouge).");
+            }
+        }
+        
         function takeOff() {
             const a = airports.find(x => x.id === originSelect.value);
             const b = airports.find(x => x.id === destSelect.value);
@@ -651,11 +921,8 @@
 
             startCoords = [a.lat, a.lon];
             endCoords = [b.lat, b.lon];
-            const dist = calculateDistance(a.lat, a.lon, b.lat, b.lon);
-
-            // Buffer de 2 min minimum si vol de <50km et 15 min si vol >50km
-            const buffer = dist < 50 ? 2 : 15; 
-            const totalMinutes = Math.max(1, Math.round((dist / 800) * 60 + buffer));
+            
+            const totalMinutes = getFlightDuration(a.lat, a.lon, b.lat, b.lon);
             totalTime = totalMinutes * 60;
             timeLeft = totalTime;
     
