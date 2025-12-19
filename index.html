@@ -13,7 +13,7 @@
             --accent: #1778bdcf;
             --bg-color: #c8dff6;
             --text-color: #1a2a6c;
-            --glass: rgba(255, 255, 255, 0.7);
+            --glass: rgba(255, 255, 255, 0.1);
             --line-color: #1a2a6c;
         }
 
@@ -60,8 +60,8 @@
             backdrop-filter: blur(10px); color: var(--text-color);
         }
 
-        #audio-settings {
-            position: fixed; top: 80px; left: 20px;
+        #settings-panel {
+            position: fixed; top: 140px; left: 20px;
             width: 250px; z-index: 1001;
             padding: 20px; text-align: left;
         }
@@ -73,7 +73,7 @@
 
         input[type="range"] { cursor: pointer; accent-color: var(--accent); }
 
-        #audio-settings select {
+        #settings-panel select {
             width: 120px;
             padding: 5px;
             font-size: 0.8rem;
@@ -81,8 +81,33 @@
             color: white;
             border: 1px solid rgba(255,255,255,0.2);
         }
-        #audio-settings option {
+        #settings-panel option {
             background: #0b132b; /* Fond sombre pour les options sur mobile */
+        }
+
+        .glass-btn-small {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            color: var(--text-color);
+            padding: 5px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .glass-btn-small:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            width: 100%;
         }
 
         #strict-toggle-btn {
@@ -129,6 +154,12 @@
             padding: 12px; border-radius: 10px; margin: 10px;
             background: rgba(255,255,255,0.9); border: none;
             font-size: 1rem; color: #0b132b;
+            max-width: 250px; text-overflow: ellipsis;
+        }
+
+        select option {
+            padding: 10px;
+            font-size: 1rem;
         }
 
         /* Style pour la sélection par durée */
@@ -227,11 +258,18 @@
             background: var(--accent);
             color: white;
         }
+
+        /* Empêche le défilement pendant le mode plein écran */
+        :fullscreen {
+            background-color: var(--bg-color);
+        }
+
         @media (max-width: 600px) {
             .timer-large { font-size: 15vw; } /* Plus gros sur mobile */
             .glass-card { width: 90%; padding: 20px; }
             .btn-takeoff { bottom: 20px; right: 20px; padding: 15px 30px; }
         }
+  
     </style>
 </head>
 <body>
@@ -240,8 +278,8 @@
     <button id="strict-toggle-btn" class="glass-btn" onclick="toggleStrictVisual()" title="Mode Strict">🔓</button>
     <input type="checkbox" id="strict-mode" class="hidden">
 
-    <div id="audio-settings" class="glass-card hidden">
-        <h3>Réglages Sonores</h3>
+    <div id="settings-panel" class="glass-card hidden">
+        <h3>Réglages</h3>
         <div class="setting-item">
             <label>Ambiance Cabine</label>
             <input type="checkbox" id="ambient-toggle" onchange="updateAmbient()">
@@ -258,6 +296,10 @@
         <div class="setting-item">
             <label>Volume</label>
             <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="updateAmbient()">
+        </div>
+        <div class="setting-item">
+            <span>Plein écran</span>
+            <button onclick="toggleFullscreen()" class="glass-btn-small">📺</button>
         </div>
         <button class="btn-random" onclick="toggleMenu()">Fermer</button>
     </div>
@@ -319,7 +361,7 @@
         const dingSound = new Audio('ding.mp3'); // Un "ding" clair
 
         function toggleMenu() {
-            document.getElementById('audio-settings').classList.toggle('hidden');
+            document.getElementById('settings-panel').classList.toggle('hidden');
             // On profite de l'ouverture du menu pour "pré-charger" les sons
             // On ne fait LOAD que si le son est en pause (au tout début) pour éviter de couper le son en plein vol
             if (ambientSound.paused) {
@@ -381,6 +423,14 @@
             }
         }
 
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => alert(`Erreur : ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
         function toggleStrictVisual() {
             const btn = document.getElementById('strict-toggle-btn');
             const checkbox = document.getElementById('strict-mode');
@@ -395,7 +445,7 @@
                 if (isFlying) {
                     document.getElementById('menu-toggle').classList.add('hidden');
                     document.getElementById('theme-switcher').classList.add('hidden');
-                        // Optionnel : cacher le bouton de verrouillage lui-même maintenant qu'il est fermé
+                    // Optionnel : cacher le bouton de verrouillage lui-même maintenant qu'il est fermé
                     btn.classList.add('hidden'); 
                 }
             } else {
@@ -450,15 +500,19 @@
         }
 
         const airports = [
-            // --- BELGIQUE & FRANCE ---
+            // --- BENELUX & PROXIMITÉ ---
             { id: "BRU", name: "Bruxelles-National", lat: 50.9014, lon: 4.4844 },
             { id: "CRL", name: "Charleroi (Sud)", lat: 50.4592, lon: 4.4538 },
             { id: "CDG", name: "Paris Charles de Gaulle", lat: 49.0097, lon: 2.5479 },
             { id: "NCE", name: "Nice Côte d'Azur", lat: 43.6653, lon: 7.2150 },
             { id: "LBG", name: "Paris - Le Bourget LBG", lat: 48.9694, lon: 2.4414 },
-            
-            // --- TEST ---
-            { id: "TST", name: "Test aéroport fantôme", lat: 50.9500, lon: 4.4844 },
+            { id: "ORY", name: "Paris Orly", lat: 48.7262, lon: 2.3652 },
+            { id: "LGG", name: "Liège Airport", lat: 50.6374, lon: 5.4432 },
+            { id: "ANR", name: "Anvers-Deurne", lat: 51.1894, lon: 4.4603 },
+            { id: "LUX", name: "Luxembourg Findel", lat: 49.6233, lon: 6.2044 },
+            { id: "LIL", name: "Lille Lesquin", lat: 50.5619, lon: 3.0894 },
+            { id: "RTM", name: "Rotterdam The Hague", lat: 51.9569, lon: 4.4372 },
+            { id: "EIN", name: "Eindhoven Airport", lat: 51.4501, lon: 5.3745 },
 
             // --- EUROPE --- 
             { id: "LHR", name: "Londres Heathrow", lat: 51.4700, lon: -0.4543 },
@@ -471,6 +525,14 @@
             { id: "GVA", name: "Genève Aéroport", lat: 46.2370, lon: 6.1091 },
             { id: "DUB", name: "Dublin Airport", lat: 53.4264, lon: -6.2499 },
             { id: "OSL", name: "Oslo Gardermoen", lat: 60.1976, lon: 11.1004 },
+            { id: "FRA", name: "Francfort-sur-le-Main", lat: 50.0379, lon: 8.5622 },
+            { id: "ZRH", name: "Zurich Kloten", lat: 47.4582, lon: 8.5555 },
+            { id: "MUC", name: "Munich Franz-Josef-Strauss", lat: 48.3537, lon: 11.7861 },
+            { id: "VIE", name: "Vienne-Schwechat", lat: 48.1103, lon: 16.5697 },
+            { id: "PRG", name: "Prague Václav-Havel", lat: 50.1008, lon: 14.2600 },
+            { id: "BCN", name: "Barcelone El Prat", lat: 41.2974, lon: 2.0833 },
+            { id: "PMI", name: "Palma de Majorque", lat: 39.5517, lon: 2.7388 },
+            { id: "MRS", name: "Marseille Provence", lat: 43.4367, lon: 5.2150 },
 
             // --- INTERNATIONAL (Long-courriers) ---
             { id: "JFK", name: "New York JFK", lat: 40.6413, lon: -73.7781 },
@@ -511,8 +573,15 @@
             }
             const dist = calculateDistance(a.lat, a.lon, b.lat, b.lon);
 
-            // Buffer de 2 min minimum si vol de <25km et 15 min si vol >25km
-            const buffer = dist < 25 ? 2 : 15; 
+            // On définit les paliers : [distance_max, temps_buffer]
+            const thresholds = [
+                { limit: 50,  buffer: 2 },   // Jusqu'à 50km -> 2 min
+                { limit: 200, buffer: 10 },  // De 50 à 200km -> 10 min
+                { limit: 500, buffer: 15 },  // De 200 à 500km -> 15 min
+                { limit: Infinity, buffer: 25 } // Au-delà -> 25 min
+            ];
+            // On trouve le premier palier qui correspond à notre distance
+            const buffer = thresholds.find(t => dist < t.limit).buffer;
             const totalMinutes = Math.max(1, Math.round((dist / 800) * 60 + buffer));
 
             // On convertit les minutes en secondes pour notre fonction de formatage
@@ -597,6 +666,7 @@
             // --- GESTION DU MODE STRICT ---
             const isStrictMode = document.getElementById('strict-mode').checked;
             if (isStrictMode) {
+                enableFocusPrison(); // On lance la "prison"
                 // On cache les boutons de réglages et de thème
                 document.getElementById('menu-toggle').classList.add('hidden');
                 document.getElementById('theme-switcher').classList.add('hidden');
@@ -683,6 +753,7 @@
                     clearInterval(timerInterval);
                     timerInterval = null;
                     ambientSound.pause(); // On arrête le moteur à l'arrivée
+                    disableFocusPrison();
                     
                     // 2. Séquence de Dings
                     const playDing = () => {
@@ -791,6 +862,43 @@
                 return "Votre vol est en cours ! Si vous quittez, votre session de focus sera perdue.";
             }
         };
+
+        async function enableFocusPrison() {
+            // 1. Passage en Plein Écran
+            if (!document.fullscreenElement) {
+                try {
+                    await document.documentElement.requestFullscreen();
+
+                    // 2. Verrouillage de l'Orientation (Paysage pour la carte)
+                    if (screen.orientation && screen.orientation.lock) {
+                        await screen.orientation.lock('landscape').catch(e => {
+                            console.log("Le verrouillage d'orientation a été refusé.");
+                        });
+                    }
+                } catch (err) {
+                    console.log("Erreur lors de l'activation du mode strict : ", err);
+                }
+            }
+
+            // 3. Blocage du bouton "Retour" du téléphone
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function() {
+                // Si l'utilisateur fait "retour", on le remet immédiatement sur la page
+                window.history.pushState(null, null, window.location.href);
+                alert("🔒 VOL EN COURS : Le mode strict empêche le retour en arrière.");
+            };
+        }
+
+        // Fonction pour libérer l'utilisateur à l'arrivée
+        function disableFocusPrison() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+            window.onpopstate = null; // On libère le bouton retour
+        }
 
     </script>
 </body>
