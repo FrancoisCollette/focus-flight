@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -226,6 +229,20 @@
             max-width: 1000px;
             display: flex; flex-direction: column;
             padding: 20px;
+        }
+
+        /* Titre de la modale */
+        .map-modal-content h3 {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Texte d'instruction (Cliquez sur un aéroport...) */
+        .map-modal-content p {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
 
         /* La carte de sélection */
@@ -846,13 +863,9 @@
                 // Changement visuel : Rouge pour arrivée
                 marker.setStyle({ color: 'red', fillColor: '#e74c3c', radius: 10 });
         
-                // Calcul du temps (réutilisation de ta logique)
+                // Calcul du temps
                 const dist = calculateDistance(tempOrigin.lat, tempOrigin.lon, tempDest.lat, tempDest.lon);
-                // Récupération de ta logique de buffer (simplifiée ici pour l'affichage)
-                const rules = [{ d: 50, b: 2 }, { d: 200, b: 10 }, { d: 500, b: 15 }, { d: Infinity, b: 25 }];
-                const ruleFound = rules.find(r => dist < r.d);
-                const buffer = ruleFound ? ruleFound.b : 25;
-                const time = Math.round((dist / 800) * 60 + buffer);
+                const time = getFlightDuration(tempOrigin.lat, tempOrigin.lon, tempDest.lat, tempDest.lon);
 
                 // Affiche la ligne
                 if (flightPathLine) selectMap.removeLayer(flightPathLine);
@@ -1167,6 +1180,11 @@
             window.onpopstate = null; // On libère le bouton retour
         }
 
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+    }
     </script>
 </body>
 </html>
