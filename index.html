@@ -123,6 +123,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-color);
             padding: 10px 15px;
+            margin : 5px 0;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -256,7 +257,7 @@
             background: transparent;
             color: var(--accent);
             border: 2px solid var(--accent);
-            padding: 8px 15px;
+            padding: 8px 15px; margin : 5px 0;
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
@@ -1004,7 +1005,7 @@
             { id: "DKR", name: "Dakar (Ancien)", lat: 14.7397, lon: -17.4902, country: "Sénégal" },
             { id: "ADD", name: "Addis-Abeba Bole", lat: 8.9779, lon: 38.7993, country: "Éthiopie" },
             { id: "ZNZ", name: "Zanzibar Abeid Amani Karume", lat: -6.2220, lon: 39.2247, isIsland: true, country: "Tanzanie" },
-            { id: "DAR", name: "Dar es Salam Julius Nyerere", lat: -6.8781, lon: 39.2026, country: "Tanzanie" },
+            { id: "DAR", name: "Dar es Salam Julius Nyerere", lat: -6.8781, lon: 39.2026, isIsland: true, country: "Tanzanie" },
             { id: "EBB", name: "Entebbe (Ouganda)", lat: 0.0424, lon: 32.4435, country: "Ouganda" },
             { id: "KGL", name: "Kigali (Rwanda)", lat: -1.9686, lon: 30.1395, country: "Rwanda" },
             { id: "DUR", name: "Durban King Shaka", lat: -29.6144, lon: 31.1197, country: "Afrique du Sud" },
@@ -1058,8 +1059,8 @@
             { id: "VVI", name: "Santa Cruz Viru Viru", lat: -17.6447, lon: -63.1353, country: "Bolivie" },
 
             // --- ASIE (AJOUTS) ---
-            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798, country: "Japon" },
-            { id: "NRT", name: "Tokyo Narita", lat: 35.7720, lon: 140.3929, country: "Japon" },
+            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798, isIsland: true, country: "Japon" },
+            { id: "NRT", name: "Tokyo Narita", lat: 35.7720, lon: 140.3929, isIsland: true, country: "Japon" },
             { id: "ICN", name: "Séoul Incheon", lat: 37.4602, lon: 126.4407, country: "Corée du Sud" },
             { id: "SIN", name: "Singapour Changi", lat: 1.3644, lon: 103.9915, country: "Singapour" },
             { id: "HKG", name: "Hong Kong Intl", lat: 22.3080, lon: 113.9185, country: "Hong Kong" },
@@ -1072,19 +1073,19 @@
             { id: "DPS", name: "Bali Denpasar", lat: -8.7482, lon: 115.1672, isIsland: true, country: "Indonésie" },
             { id: "SGN", name: "Hô Chi Minh-Ville", lat: 10.8185, lon: 106.6588, country: "Vietnam" },
             { id: "MLE", name: "Malé (Maldives)", lat: 4.1918, lon: 73.5291, isIsland: true, country: "Maldives" },
-            { id: "CGK", name: "Jakarta Soekarno-Hatta", lat: -6.1256, lon: 106.6559, country: "Indonésie" },
+            { id: "CGK", name: "Jakarta Soekarno-Hatta", lat: -6.1256, lon: 106.6559, isIsland: true, country: "Indonésie" },
             { id: "MNL", name: "Manille Ninoy Aquino", lat: 14.5086, lon: 121.0194, isIsland: true, country: "Philippines" },
             { id: "AUH", name: "Abou Dabi Intl", lat: 24.4330, lon: 54.6511, country: "Émirats Arabes Unis" }, 
             { id: "SHJ", name: "Sharjah Intl", lat: 25.3286, lon: 55.5172, country: "Émirats Arabes Unis" }, 
             { id: "GMP", name: "Séoul Gimpo", lat: 37.5583, lon: 126.7906, country: "Corée du Sud" },
-            { id: "KIX", name: "Osaka Kansai", lat: 34.4320, lon: 135.2304, country: "Japon" },
+            { id: "KIX", name: "Osaka Kansai", lat: 34.4320, lon: 135.2304, isIsland: true, country: "Japon" },
             { id: "PVG", name: "Shanghai Pudong", lat: 31.1443, lon: 121.8083, country: "Chine" },
             { id: "SHA", name: "Shanghai Hongqiao", lat: 31.1979, lon: 121.3363, country: "Chine" },
             { id: "CAN", name: "Guangzhou Baiyun", lat: 23.3924, lon: 113.2988, country: "Chine" },
             { id: "SZX", name: "Shenzhen Bao'an", lat: 22.6393, lon: 113.8107, country: "Chine" },
             { id: "TPE", name: "Taipei Taoyuan", lat: 25.0797, lon: 121.2342, isIsland: true, country: "Taïwan" },
-            { id: "ITM", name: "Osaka Itami", lat: 34.7855, lon: 135.4382, country: "Japon" },
-            { id: "CTS", name: "Sapporo New Chitose", lat: 42.7752, lon: 141.6923, country: "Japon" },
+            { id: "ITM", name: "Osaka Itami", lat: 34.7855, lon: 135.4382, isIsland: true, country: "Japon" },
+            { id: "CTS", name: "Sapporo New Chitose", lat: 42.7752, lon: 141.6923, isIsland: true, country: "Japon" },
             { id: "BOM", name: "Mumbai", lat: 19.0896, lon: 72.8656, country: "Inde" },
             { id: "BLR", name: "Bangalore", lat: 13.1986, lon: 77.7066, country: "Inde" },
             { id: "DAD", name: "Da Nang Intl", lat: 16.0439, lon: 108.1994, country: "Vietnam" },
@@ -1108,8 +1109,8 @@
             { id: "NOU", name: "Nouméa La Tontouta", lat: -22.0145, lon: 166.2130, isIsland: true, country: "Nouvelle-Calédonie" },
             { id: "OOL", name: "Gold Coast", lat: -28.1644, lon: 153.5047, country: "Australie" },
             { id: "PER", name: "Perth Airport", lat: -31.9403, lon: 115.9670, country: "Australie" },
-            { id: "CHC", name: "Christchurch Intl", lat: -43.4894, lon: 172.5322, country: "Nouvelle-Zélande" }, 
-            { id: "WLG", name: "Wellington Intl", lat: -41.3272, lon: 174.8076, country: "Nouvelle-Zélande" },
+            { id: "CHC", name: "Christchurch Intl", lat: -43.4894, lon: 172.5322, isIsland: true, country: "Nouvelle-Zélande" }, 
+            { id: "WLG", name: "Wellington Intl", lat: -41.3272, lon: 174.8076, isIsland: true, country: "Nouvelle-Zélande" },
             { id: "SEZ", name: "Seychelles Intl", lat: -4.6744, lon: 55.5217, isIsland: true, country: "Seychelles" },
             { id: "NAN", name: "Fidji (Nadi Intl)", lat: -17.7554, lon: 177.4412, isIsland: true, country: "Fidji" },
             { id: "BOB", name: "Bora Bora", lat: -16.4444, lon: -151.7514, isIsland: true, country: "Polynésie Française" }, 
@@ -1719,11 +1720,11 @@
             });
 
             const definitions = [
-                { id: 'endurance', title: "Endurance", icon: "⏱️", stat: totalHours, color: "#4caf50", levels: [{t:1, n:"Novice"}, {t:10, n:"Commandant"}, {t:50, n:"Photon"}] },
-                { id: 'globetrotter', title: "Globe-Trotter", icon: "🌍", stat: airportsSet.size, color: "#4caf50", levels: [{t:5, n:"Touriste"}, {t:15, n:"Voyageur"}, {t:30, n:"PDG Jet"}] },
-                { id: 'island', title: "Island Lover", icon: "🏝️", stat: islandsSet.size, color: "#4caf50", levels: [{t:2, n:"Saut de puce"}, {t:5, n:"Robinson"}, {t:10, n:"Roi"}] },
-                { id: 'assiduite', title: "Assiduité", icon: "🔥", stat: logbook.length, color: "#4caf50", levels: [{t:5, n:"Copilote"}, {t:20, n:"Vétéran"}, {t:100, n:"Légende"}] },
-                { id : 'country_hopper', title: "Citoyen du Monde", icon: "🛂", stat: countriesSet.size, color: "#4caf50", levels: [{t: 3, n: "Expatrié"}, {t: 10, n: "Diplomate"}, {t: 25, n: "Ambassadeur UN"}] },
+                { id: 'endurance', title: "Endurance", icon: "⏱️", stat: totalHours, color: "#4caf50", levels: [{t:1, n:"Passager"}, {t:5, n:"Hôte de l'air"}, {t:10, n:"Le temps d'un long courrier"}, {t:18, n:"Copilote"}, {t:30, n:"Commandant"}, {t:50, n:"Photon"}] },
+                { id: 'globetrotter', title: "Globe-Trotter", icon: "🌍", stat: airportsSet.size, color: "#4caf50", levels: [{t:5, n:"Touriste"}, {t:15, n:"Voyageur"}, {t:40, n:"passionné d'aéroports"}, {t:80, n:"PDG Jet"}, {t:150, n:"Adicte à l'aviation"}] },
+                { id: 'island', title: "Island Lover", icon: "🏝️", stat: islandsSet.size, color: "#4caf50", levels: [{t:2, n:"Saut de puce"}, {t:5, n:"Robinson Crusoé"}, {t:10, n:"Mousse"}, {t:18, n:"Capitaine de ferry"}, {t:25, n:"Pirate assidu"}, {t:40, n:"Roi des pirates"}] },
+                { id: 'assiduite', title: "Assiduité", icon: "🔥", stat: logbook.length, color: "#4caf50", levels: [{t:5, n:"Battème de l'air"}, {t:18, n:"Apprenti pilote"}, {t:50, n:"Copilote"}, {t:100, n:"Pilote de ligne"}, {t:250, n:"Vétéran"}, {t:500, n:"Légende"}] },
+                { id : 'country_hopper', title: "Citoyen du Monde", icon: "🛂", stat: countriesSet.size, color: "#4caf50", levels: [{t: 3, n: "Expatrié"}, {t: 12, n: "Président"}, {t: 30, n: "Diplomate"}, {t: 50, n: "Ambassadeur des Nations Unies"}] },
                 { id: 'island_streak', title: "L'Appel du Large", icon: "🌊", stat: maxIslandStreak, color: "#4caf50", levels: [{t: 3, n: "Vrai Marin"}, {t: 6, n: "Légende des Mers"}, {t: 12, n: "Poséidon"}] }
             ];
 
