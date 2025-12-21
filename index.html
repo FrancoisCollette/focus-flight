@@ -554,17 +554,21 @@
 
 
         @media (max-width: 600px) {
-            #settings-panel { width: 50vw; }
+            body { overflow-y: auto !important ; height: auto; min-height: 100vh; }
+            #settings-panel { width: 85vw; }
             .timer-large { font-size: 15vw; } /* Plus gros sur mobile */
-            .glass-card { width: 90%; padding: 20px; }
-            .btn-takeoff { bottom: 20px; right: 20px; padding: 15px 30px; }
+            .glass-card { width: 90%; padding: 20px; margin : 20px; position : relative;}
+            .btn-takeoff { position: fixed; bottom: 20px; right: 20px; padding: 15px 30px; z-index : 100; }
+
+            main, .container { padding-bottom: 100px; }
 
             #history-list-box { max-height: 60vh; } /* On donne un peu plus d'espace sur mobile */ 
     
             /* On réduit légèrement la taille du texte pour que ça tienne sur une ligne */
             #history-table-body td { font-size: 0.85em; }
 
-            #badge-list-container { grid-template-columns: 1fr; } /* 1 seule colonne sur petit mobile */
+            #badge-list-container { grid-template-columns: 1fr; gap: 15px; } /* 1 seule colonne sur petit mobile */
+            #info-overlay .info-box { width: 90vw; max-width: none; height: 70vh; }
         }
   
     </style>
