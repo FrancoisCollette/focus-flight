@@ -554,18 +554,15 @@
 
 
         @media (max-width: 600px) {
+            #settings-panel { width: 20vw; }
             .timer-large { font-size: 15vw; } /* Plus gros sur mobile */
             .glass-card { width: 90%; padding: 20px; }
             .btn-takeoff { bottom: 20px; right: 20px; padding: 15px 30px; }
 
-            #history-list-box {
-                max-height: 60vh; /* On donne un peu plus d'espace sur mobile */
-            }
+            #history-list-box { max-height: 60vh; } /* On donne un peu plus d'espace sur mobile */ 
     
             /* On réduit légèrement la taille du texte pour que ça tienne sur une ligne */
-            #history-table-body td {
-                font-size: 0.85em;
-            }
+            #history-table-body td { font-size: 0.85em; }
 
             #badge-list-container { grid-template-columns: 1fr; } /* 1 seule colonne sur petit mobile */
         }
