@@ -113,6 +113,69 @@
             width: 100%;
         }
 
+        /* Style du bouton dans le menu */
+        .menu-btn-history {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .menu-btn-history:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* La Modal qui survole tout */
+        #history-modal {
+            position: fixed; /* Fixé par dessus tout */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(var(--bg-color), 0.6); /* Overlay adapté au thème et glass */
+            display: none; /* Piloté par JS */
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Priorité absolue */
+            backdrop-filter: blur(5px);
+        }
+
+        .history-content-glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            animation: modalAppear 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Scrollbar personnalisée pour le glassomorphisme */
+        #history-list-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        #history-list-box::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
         #strict-toggle-btn {
             position: fixed;
             top: 80px; /* Juste sous le bouton menu qui est à 20px + sa hauteur */
@@ -258,6 +321,31 @@
             display: flex; justify-content: space-around; align-items: center;
         }
 
+        .marker-normal { /* Différents style de marqueurs pour les aéroports sur la map de sélection*/
+            stroke: #1a2a6c !important;
+            fill: #1778bd !important;
+            fill-opacity: 0.9 !important;
+        }
+
+        .marker-visited {
+            stroke: #454cfc !important;
+            fill: #8884f9e7 !important;
+            fill-opacity: 0.4 !important;
+        }
+        /* Style Départ (Vert) */
+        .marker-departure {
+            stroke: #1b5e20 !important;
+            fill: #2ecc71 !important;
+            fill-opacity: 0.8 !important;
+        }
+
+        /* Style Arrivée (Rouge) */
+        .marker-arrival {
+            stroke: #b71c1c !important;
+            fill: #e74c3c !important;
+            fill-opacity: 0.8 !important;
+        }
+
         /* --- BOUTON DÉCOLLAGE --- */
         .btn-takeoff {
             position: fixed; bottom: 40px; right: 40px;
@@ -322,10 +410,164 @@
             background-color: var(--bg-color);
         }
 
+        /* Grille de 2x2 pour les succès */
+        #badge-list-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 10px;
+        }
+
+        /* Style de la carte individuelle */
+        .badge-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .badge-card h4 { margin: 8px 0; font-size: 1.1em; color: #fff; }
+
+        /* Conteneur de la barre grise */
+        .badge-progress-container {
+            background: var(--accent);
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin: 10px 0;
+            overflow: visible;
+        }
+
+        /* La barre de couleur qui progresse */
+        .badge-progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Scrollbar personnalisée pour le glassomorphisme */
+        #badge-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #badge-list-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* Bouton Info discret */
+        .global-info-btn {
+            position: absolute;
+            top: 20px;
+            right: 50px; /* À gauche de la croix de fermeture */
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        .global-info-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Style de l'alerte d'info (ou tu peux réutiliser une modale existante) */
+        #info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8); /* Fond sombre */
+            backdrop-filter: blur(5px);    /* Flou d'arrière-plan */
+            display: none;                 /* Caché par défaut */
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;                 /* Au-dessus de tout le reste */
+        }
+
+        .info-box {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            max-height: 70vh; /* Limite la hauteur à 70% de l'écran */
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+        #info-title {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        #info-text {
+            color: #ddd;
+            line-height: 1.6;
+            font-size: 0.95em;
+            white-space: pre-line; /* Respecte les sauts de ligne du JS */
+
+            overflow-y: auto; /* Active le scroll si le texte dépasse */
+            padding-right: 10px; /* Espace pour la scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) transparent;
+        }
+        /* Style Webkit pour la scrollbar (Chrome, Safari, Edge) */
+        #info-text::-webkit-scrollbar {
+            width: 6px;
+        }
+        #info-text::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #info-text::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 20px;
+            border: none;
+        }
+
+        .close-info-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .next-step { font-size: 0.75em; opacity: 0.6; }
+        .current-rank { font-size: 0.85em; font-weight: bold; color: var(--accent); }
+
+
         @media (max-width: 600px) {
             .timer-large { font-size: 15vw; } /* Plus gros sur mobile */
             .glass-card { width: 90%; padding: 20px; }
             .btn-takeoff { bottom: 20px; right: 20px; padding: 15px 30px; }
+
+            #history-list-box {
+                max-height: 60vh; /* On donne un peu plus d'espace sur mobile */
+            }
+    
+            /* On réduit légèrement la taille du texte pour que ça tienne sur une ligne */
+            #history-table-body td {
+                font-size: 0.85em;
+            }
+
+            #badge-list-container { grid-template-columns: 1fr; } /* 1 seule colonne sur petit mobile */
         }
   
     </style>
@@ -338,6 +580,7 @@
 
     <div id="settings-panel" class="glass-card hidden">
         <h3>Réglages</h3>
+
         <div class="setting-item">
             <label>Ambiance Cabine</label>
             <input type="checkbox" id="ambient-toggle" onchange="updateAmbient()">
@@ -355,10 +598,18 @@
             <label>Volume</label>
             <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="updateAmbient()">
         </div>
+
         <div class="setting-item">
             <span>Plein écran</span>
             <button onclick="toggleFullscreen()" class="glass-btn-small">📺</button>
         </div>
+
+        <button onclick="openHistoryModal()" class="menu-btn-history">📊 Historique</button>
+
+        <button onclick="openBadgeModal()" class="menu-btn-history">
+            <span>🏆</span> Mes Succès
+        </button>
+
         <button class="btn-random" onclick="toggleMenu()">Fermer</button>
     </div>
 
@@ -400,6 +651,40 @@
         </div>
     </div>
 
+    <div id="history-modal">
+        <div class="history-content-glass">
+            
+            <div class="history-title-bar" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                <h2 style="color: var(--accent); margin-top: 0;">Journal de Bord</h2>
+                <div id="total-focus-time" style="font-size: 0.9em; font-weight: 500; color: var(--text-color); opacity: 0.8;">
+                    Temps total : 0 min
+                </div>
+            </div>
+
+            <div id="history-header" style="padding: 0 15px;">
+                <table style="width:100%; border-collapse: collapse; color: var(--text-color); opacity: 0.8; font-size: 0.75em;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 10px 5px; border-bottom: 2px solid var(--accent); text-align: left; width: 60%;">TRAJET</th>
+                            <th style="padding: 10px 5px; border-bottom: 2px solid var(--accent); text-align: center; width: 15%;">VOLS</th>
+                            <th style="padding: 10px 5px; border-bottom: 2px solid var(--accent); text-align: right; width: 25%;">TOTAL</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div id="history-list-box" style="max-height: 40vh; overflow-y: auto; padding: 0 15px;">
+                <table id="history-table-body" style="width:100%; border-collapse: collapse; color: var(--text-color);">
+                    </table>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="clearHistory()" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; padding: 10px 15px; border-radius: 10px; cursor: pointer;">Réinitialiser</button>
+                <button onclick="closeHistoryModal()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <button class="btn-takeoff" id="btn-go" onclick="takeOff()">DÉCOLLAGE</button>
 
     <div id="flight-screen">
@@ -417,6 +702,40 @@
     </div>
 
     <div id="modal-overlay" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1999;"></div>
+
+    <div id="badge-modal" class="modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div class="modal-content" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); width: 90%; max-width: 75vh; border-radius: 20px; padding: 25px; color: white; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+        
+            <span onclick="closeBadgeModal()" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5em; opacity: 0.7;">&times;</span>
+
+            <div class="modal-header">
+                <button class="global-info-btn" onclick="showAllBadgesHelp()">ⓘ</button>
+                <h2>Tableau des Trophées</h2>
+            </div>
+
+            <div class="badge-header" style="text-align: center; margin-bottom: 25px;">
+                <h2 style="margin: 0; color: var(--accent);">Tableau des Trophées</h2>
+                <p style="font-size: 0.9em; opacity: 0.7;">Vos exploits en tant que pilote chez Focus Airlines</p>
+            </div>
+
+            <div id="badge-list-container" style="max-height: 40vh; overflow-y: auto; padding-right: 10px;">
+                <p style="text-align: center; opacity: 0.5; padding: 20px;">Chargement de vos médailles...</p>
+            </div>
+
+            <div style="margin-top: 25px; text-align: center;">
+                <button onclick="closeBadgeModal()" style="background: var(--accent); border: none; padding: 10px 25px; border-radius: 25px; color: white; cursor: pointer; font-weight: bold;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-overlay" onclick="this.style.display='none'">
+        <div class="info-box" onclick="event.stopPropagation()">
+            <h3 id="info-title"></h3>
+            <div id="info-text"></div>
+
+            <button class="close-info-btn" onclick="document.getElementById('info-overlay').style.display='none'">Compris</button>
+        </div>
+    </div>
 
     <script>
         let currentTheme = 'dark'; // État initial
@@ -485,7 +804,7 @@
         }
 
         function toggleTheme() {
-            const themes = ['dark', 'light', 'mixed'];
+            const themes = ['light', 'mixed', 'dark'];
             // On passe au thème suivant dans le tableau
             currentTheme = themes[(themes.indexOf(currentTheme) + 1) % themes.length];
     
@@ -522,6 +841,7 @@
                     document.getElementById('theme-switcher').classList.add('hidden');
                     // Optionnel : cacher le bouton de verrouillage lui-même maintenant qu'il est fermé
                     btn.classList.add('hidden'); 
+                    enableFocusPrison();
                 }
             } else {
                 btn.classList.remove('active');
@@ -576,117 +896,212 @@
 
         const airports = [
             // --- BENELUX & PROXIMITÉ ---
-            { id: "BRU", name: "Bruxelles-National", lat: 50.9014, lon: 4.4844 },
-            { id: "CRL", name: "Charleroi (Sud)", lat: 50.4592, lon: 4.4538 },
-            { id: "CDG", name: "Paris Charles de Gaulle", lat: 49.0097, lon: 2.5479 },
-            { id: "NCE", name: "Nice Côte d'Azur", lat: 43.6653, lon: 7.2150 },
-            { id: "LBG", name: "Paris - Le Bourget LBG", lat: 48.9694, lon: 2.4414 },
-            { id: "ORY", name: "Paris Orly", lat: 48.7262, lon: 2.3652 },
-            { id: "LGG", name: "Liège Airport", lat: 50.6374, lon: 5.4432 },
-            { id: "ANR", name: "Anvers-Deurne", lat: 51.1894, lon: 4.4603 },
-            { id: "LUX", name: "Luxembourg Findel", lat: 49.6233, lon: 6.2044 },
-            { id: "LIL", name: "Lille Lesquin", lat: 50.5619, lon: 3.0894 },
-            { id: "RTM", name: "Rotterdam The Hague", lat: 51.9569, lon: 4.4372 },
-            { id: "EIN", name: "Eindhoven Airport", lat: 51.4501, lon: 5.3745 },
-            { id: "SXB", name: "Strasbourg Entzheim", lat: 48.5383, lon: 7.6282 },
-            { id: "BSL", name: "Bâle-Mulhouse", lat: 47.5900, lon: 7.5292 },
+            { id: "BRU", name: "Bruxelles-National", lat: 50.9014, lon: 4.4844, country: "Belgique" },
+            { id: "CRL", name: "Charleroi (Sud)", lat: 50.4592, lon: 4.4538, country: "Belgique" },
+            { id: "CDG", name: "Paris Charles de Gaulle", lat: 49.0097, lon: 2.5479, country: "France" },
+            { id: "NCE", name: "Nice Côte d'Azur", lat: 43.6653, lon: 7.2150, country: "France" },
+            { id: "LBG", name: "Paris - Le Bourget LBG", lat: 48.9694, lon: 2.4414, country: "France" },
+            { id: "ORY", name: "Paris Orly", lat: 48.7262, lon: 2.3652, country: "France" },
+            { id: "LGG", name: "Liège Airport", lat: 50.6374, lon: 5.4432, country: "Belgique" },
+            { id: "ANR", name: "Anvers-Deurne", lat: 51.1894, lon: 4.4603, country: "Belgique" },
+            { id: "LUX", name: "Luxembourg Findel", lat: 49.6233, lon: 6.2044, country: "Luxembourg" },
+            { id: "LIL", name: "Lille Lesquin", lat: 50.5619, lon: 3.0894, country: "France" },
+            { id: "RTM", name: "Rotterdam The Hague", lat: 51.9569, lon: 4.4372, country: "Pays-Bas" },
+            { id: "EIN", name: "Eindhoven Airport", lat: 51.4501, lon: 5.3745, country: "Pays-Bas" },
+            { id: "SXB", name: "Strasbourg Entzheim", lat: 48.5383, lon: 7.6282, country: "France" },
+            { id: "BSL", name: "Bâle-Mulhouse", lat: 47.5900, lon: 7.5292, country: "France" },
 
             // --- EUROPE (AJOUTS) --- 
-            { id: "LHR", name: "Londres Heathrow", lat: 51.4700, lon: -0.4543 },
-            { id: "LGW", name: "Londres Gatwick", lat: 51.1481, lon: -0.1903 },
-            { id: "MAD", name: "Madrid Barajas", lat: 40.4839, lon: -3.5680 },
-            { id: "BER", name: "Berlin Brandenburg", lat: 52.3667, lon: 13.5033 },
-            { id: "FCO", name: "Rome Fiumicino", lat: 41.8003, lon: 12.2389 },
-            { id: "AMS", name: "Amsterdam Schiphol", lat: 52.3105, lon: 4.7683 },
-            { id: "LIS", name: "Lisbonne Humberto Delgado", lat: 38.7742, lon: -9.1342 },
-            { id: "ATH", name: "Athènes Elefthérios-Venizélos", lat: 37.9364, lon: 23.9445 },
-            { id: "GVA", name: "Genève Aéroport", lat: 46.2370, lon: 6.1091 },
-            { id: "DUB", name: "Dublin Airport", lat: 53.4264, lon: -6.2499 },
-            { id: "OSL", name: "Oslo Gardermoen", lat: 60.1976, lon: 11.1004 },
-            { id: "FRA", name: "Francfort-sur-le-Main", lat: 50.0379, lon: 8.5622 },
-            { id: "ZRH", name: "Zurich Kloten", lat: 47.4582, lon: 8.5555 },
-            { id: "MUC", name: "Munich Franz-Josef-Strauss", lat: 48.3537, lon: 11.7861 },
-            { id: "VIE", name: "Vienne-Schwechat", lat: 48.1103, lon: 16.5697 },
-            { id: "PRG", name: "Prague Václav-Havel", lat: 50.1008, lon: 14.2600 },
-            { id: "BCN", name: "Barcelone El Prat", lat: 41.2974, lon: 2.0833 },
-            { id: "PMI", name: "Palma de Majorque", lat: 39.5517, lon: 2.7388 },
-            { id: "MRS", name: "Marseille Provence", lat: 43.4367, lon: 5.2150 },
-            { id: "CPH", name: "Copenhague Kastrup", lat: 55.6180, lon: 12.6508 },
-            { id: "HEL", name: "Helsinki Vantaa", lat: 60.3172, lon: 24.9633 },
-            { id: "IST", name: "Istanbul Airport", lat: 41.2753, lon: 28.7519 },
-            { id: "DME", name: "Moscou Domodedovo", lat: 55.4086, lon: 37.9061 },
-            { id: "KEF", name: "Reykjavik Keflavik", lat: 63.9850, lon: -22.6056 },
-            { id: "VCE", name: "Venise Marco Polo", lat: 45.5053, lon: 12.3519 },
-            { id: "SOU", name: "Southampton", lat: 50.9503, lon: -1.3567 },
-            { id: "BOH", name: "Bournemouth", lat: 50.7800, lon: -1.8425 },
-            { id: "LIN", name: "Milan Linate", lat: 45.4451, lon: 9.2767 },
-            { id: "MXP", name: "Milan Malpensa", lat: 45.6300, lon: 8.7231 },
-            { id: "STN", name: "Londres Stansted", lat: 51.8860, lon: 0.2389 },
-            { id: "LCY", name: "Londres City", lat: 51.5053, lon: 0.0553 },
-            { id: "CIA", name: "Rome Ciampino", lat: 41.7994, lon: 12.5949 },
-            { id: "DUS", name: "Düsseldorf Intl", lat: 51.2895, lon: 6.7668 },
-            { id: "CGN", name: "Cologne/Bonn", lat: 50.8659, lon: 7.1427 },
-            { id: "LYS", name: "Lyon Saint-Exupéry", lat: 45.7256, lon: 5.0811 },
-            { id: "TXL", name: "Berlin Tegel", lat: 52.5597, lon: 13.2877 }, 
-            { id: "LEJ", name: "Leipzig/Halle", lat: 51.4324, lon: 12.2416 },
+            { id: "LHR", name: "Londres Heathrow", lat: 51.4700, lon: -0.4543, country: "Royaume-Uni" },
+            { id: "LGW", name: "Londres Gatwick", lat: 51.1481, lon: -0.1903, country: "Royaume-Uni" },
+            { id: "MAD", name: "Madrid Barajas", lat: 40.4839, lon: -3.5680, country: "Espagne" },
+            { id: "BER", name: "Berlin Brandenburg", lat: 52.3667, lon: 13.5033, country: "Allemagne" },
+            { id: "FCO", name: "Rome Fiumicino", lat: 41.8003, lon: 12.2389, country: "Italie" },
+            { id: "AMS", name: "Amsterdam Schiphol", lat: 52.3105, lon: 4.7683, country: "Pays-Bas" },
+            { id: "LIS", name: "Lisbonne Humberto Delgado", lat: 38.7742, lon: -9.1342, country: "Portugal" },
+            { id: "ATH", name: "Athènes Elefthérios-Venizélos", lat: 37.9364, lon: 23.9445, country: "Grèce" },
+            { id: "GVA", name: "Genève Aéroport", lat: 46.2370, lon: 6.1091, country: "Suisse" },
+            { id: "DUB", name: "Dublin Airport", lat: 53.4264, lon: -6.2499, country: "Irlande" },
+            { id: "OSL", name: "Oslo Gardermoen", lat: 60.1976, lon: 11.1004, country: "Norvège" },
+            { id: "FRA", name: "Francfort-sur-le-Main", lat: 50.0379, lon: 8.5622, country: "Allemagne" },
+            { id: "ZRH", name: "Zurich Kloten", lat: 47.4582, lon: 8.5555, country: "Suisse" },
+            { id: "MUC", name: "Munich Franz-Josef-Strauss", lat: 48.3537, lon: 11.7861, country: "Allemagne" },
+            { id: "VIE", name: "Vienne-Schwechat", lat: 48.1103, lon: 16.5697, country: "Autriche" },
+            { id: "PRG", name: "Prague Václav-Havel", lat: 50.1008, lon: 14.2600, country: "République Tchèque" },
+            { id: "BCN", name: "Barcelone El Prat", lat: 41.2974, lon: 2.0833, country: "Espagne" },
+            { id: "PMI", name: "Palma de Majorque", lat: 39.5517, lon: 2.7388, isIsland: true, country: "Espagne" },
+            { id: "MRS", name: "Marseille Provence", lat: 43.4367, lon: 5.2150, country: "France" },
+            { id: "CPH", name: "Copenhague Kastrup", lat: 55.6180, lon: 12.6508, country: "Danemark" },
+            { id: "HEL", name: "Helsinki Vantaa", lat: 60.3172, lon: 24.9633, country: "Finlande" },
+            { id: "IST", name: "Istanbul Airport", lat: 41.2753, lon: 28.7519, country: "Turquie" },
+            { id: "DME", name: "Moscou Domodedovo", lat: 55.4086, lon: 37.9061, country: "Russie" },
+            { id: "KEF", name: "Reykjavik Keflavik", lat: 63.9850, lon: -22.6056, isIsland: true, country: "Islande" },
+            { id: "VCE", name: "Venise Marco Polo", lat: 45.5053, lon: 12.3519, country: "Italie" },
+            { id: "SOU", name: "Southampton", lat: 50.9503, lon: -1.3567, country: "Royaume-Uni" },
+            { id: "BOH", name: "Bournemouth", lat: 50.7800, lon: -1.8425, country: "Royaume-Uni" },
+            { id: "LIN", name: "Milan Linate", lat: 45.4451, lon: 9.2767, country: "Italie" },
+            { id: "MXP", name: "Milan Malpensa", lat: 45.6300, lon: 8.7231, country: "Italie" },
+            { id: "STN", name: "Londres Stansted", lat: 51.8860, lon: 0.2389, country: "Royaume-Uni" },
+            { id: "LCY", name: "Londres City", lat: 51.5053, lon: 0.0553, country: "Royaume-Uni" },
+            { id: "CIA", name: "Rome Ciampino", lat: 41.7994, lon: 12.5949, country: "Italie" },
+            { id: "DUS", name: "Düsseldorf Intl", lat: 51.2895, lon: 6.7668, country: "Allemagne" },
+            { id: "CGN", name: "Cologne/Bonn", lat: 50.8659, lon: 7.1427, country: "Allemagne" },
+            { id: "LYS", name: "Lyon Saint-Exupéry", lat: 45.7256, lon: 5.0811, country: "France" },
+            { id: "TXL", name: "Berlin Tegel", lat: 52.5597, lon: 13.2877, country: "Allemagne" }, 
+            { id: "LEJ", name: "Leipzig/Halle", lat: 51.4324, lon: 12.2416, country: "Allemagne" },
+            { id: "IBZ", name: "Ibiza Airport", lat: 38.8728, lon: 1.3731, isIsland: true, country: "Espagne" },
+            { id: "MAH", name: "Minorque", lat: 39.8626, lon: 4.2186, country: "Espagne" },
+            { id: "JTR", name: "Santorin (Thira)", lat: 36.3992, lon: 25.4793, isIsland: true, country: "Grèce" },
+            { id: "JMK", name: "Mykonos", lat: 37.4351, lon: 25.3481, isIsland: true, country: "Grèce" },
+            { id: "HER", name: "Héraklion (Crète)", lat: 35.3397, lon: 25.1803, isIsland: true, country: "Grèce" },
+            { id: "AJA", name: "Ajaccio Napoléon Bonaparte", lat: 41.9238, lon: 8.8025, isIsland: true, country: "France" },
+            { id: "BIA", name: "Bastia Poretta", lat: 42.5527, lon: 9.4837, isIsland: true, country: "France" },
+            { id: "CAG", name: "Cagliari Elmas", lat: 39.2515, lon: 9.0543, isIsland: true, country: "Italie" },
+            { id: "AYT", name: "Antalya Turkiye", lat: 36.8987, lon: 30.7925, country: "Turquie" },
+            { id: "DBV", name: "Dubrovnik Croatie", lat: 42.5614, lon: 18.2615, country: "Croatie" },
+            { id: "LCA", name: "Larnaca Chypre", lat: 34.8723, lon: 33.6203, isIsland: true, country: "Chypre" },
+            { id: "OTP", name: "Bucarest Henri Coandă", lat: 44.5707, lon: 26.0844, country: "Roumanie" },
 
             // --- AFRIQUE (AJOUTS) ---
-            { id: "CAI", name: "Le Caire Intl", lat: 30.1219, lon: 31.4056 },
-            { id: "JNB", name: "Johannesburg O.R. Tambo", lat: -26.1367, lon: 28.2461 },
-            { id: "CMN", name: "Casablanca Mohammed V", lat: 33.3675, lon: -7.5899 },
-            { id: "NBO", name: "Nairobi Jomo Kenyatta", lat: -1.3192, lon: 36.9275 },
-            { id: "CPT", name: "Le Cap Intl", lat: -33.9715, lon: 18.6021 },
-            { id: "DSS", name: "Dakar Blaise Diagne", lat: 14.6711, lon: -17.0673 },
-            { id: "RAK", name: "Marrakech-Ménara", lat: 31.6069, lon: -8.0363 },
-            { id: "RUN", name: "La Réunion Roland-Garros", lat: -20.8872, lon: 55.5103 },
-            { id: "MRU", name: "Maurice Sir Seewoosagur", lat: -20.4300, lon: 57.6836 },
+            { id: "CAI", name: "Le Caire Intl", lat: 30.1219, lon: 31.4056, country: "Égypte" },
+            { id: "JNB", name: "Johannesburg O.R. Tambo", lat: -26.1367, lon: 28.2461, country: "Afrique du Sud" },
+            { id: "CMN", name: "Casablanca Mohammed V", lat: 33.3675, lon: -7.5899, country: "Maroc" },
+            { id: "NBO", name: "Nairobi Jomo Kenyatta", lat: -1.3192, lon: 36.9275, country: "Kenya" },
+            { id: "CPT", name: "Le Cap Intl", lat: -33.9715, lon: 18.6021, country: "Afrique du Sud" },
+            { id: "DSS", name: "Dakar Blaise Diagne", lat: 14.6711, lon: -17.0673, country: "Sénégal" },
+            { id: "RAK", name: "Marrakech-Ménara", lat: 31.6069, lon: -8.0363, country: "Maroc" },
+            { id: "RUN", name: "La Réunion Roland-Garros", lat: -20.8872, lon: 55.5103, isIsland: true, country: "France" },
+            { id: "MRU", name: "Maurice Sir Seewoosagur", lat: -20.4300, lon: 57.6836, isIsland: true, country: "Maurice" },
+            { id: "TFN", name: "Tenerife Nord", lat: 28.4827, lon: -16.3415, isIsland: true, country: "Espagne" },
+            { id: "TFS", name: "Tenerife Sud", lat: 28.0445, lon: -16.5725, isIsland: true, country: "Espagne" },
+            { id: "LPA", name: "Gran Canaria", lat: 27.9319, lon: -15.3866, isIsland: true, country: "Espagne" },
+            { id: "FNC", name: "Madère (Funchal)", lat: 32.6941, lon: -16.7779, isIsland: true, country: "Portugal" },
+            { id: "PDL", name: "Açores (Ponta Delgada)", lat: 37.7412, lon: -25.6979, isIsland: true, country: "Portugal" },
+            { id: "AGA", name: "Agadir Al Massira", lat: 30.3250, lon: -9.4107, country: "Maroc" },
+            { id: "TNG", name: "Tanger Ibn Battouta", lat: 35.7269, lon: -5.9169, country: "Maroc" },
+            { id: "TUN", name: "Tunis-Carthage", lat: 36.8510, lon: 10.2272, country: "Tunisie" },
+            { id: "DJE", name: "Djerba-Zarzis", lat: 33.8750, lon: 10.7755, isIsland: true, country: "Tunisie" },
+            { id: "ALG", name: "Alger Houari Boumédiène", lat: 36.6910, lon: 3.2154, country: "Algérie" },
+            { id: "ORN", name: "Oran Ahmed Ben Bella", lat: 35.6239, lon: -0.6212, country: "Algérie" },
+            { id: "BZV", name: "Brazzaville Maya-Maya", lat: -4.2517, lon: 15.2530, country: "Congo" },
+            { id: "FIH", name: "Kinshasa Ndjili", lat: -4.3858, lon: 15.4470, country: "RD Congo" },
+            { id: "LOS", name: "Lagos Murtala Muhammed", lat: 6.5774, lon: 3.3210, country: "Nigéria" },
+            { id: "ABV", name: "Abuja Intl", lat: 9.0068, lon: 7.2631, country: "Nigéria" },
+            { id: "ACC", name: "Accra Kotoka", lat: 5.6051, lon: -0.1668, country: "Ghana" },
+            { id: "ABJ", name: "Abidjan Félix Houphouët-Boigny", lat: 5.2614, lon: -3.9263, country: "Côte d'Ivoire" },
+            { id: "DKR", name: "Dakar (Ancien)", lat: 14.7397, lon: -17.4902, country: "Sénégal" },
+            { id: "ADD", name: "Addis-Abeba Bole", lat: 8.9779, lon: 38.7993, country: "Éthiopie" },
+            { id: "ZNZ", name: "Zanzibar Abeid Amani Karume", lat: -6.2220, lon: 39.2247, isIsland: true, country: "Tanzanie" },
+            { id: "DAR", name: "Dar es Salam Julius Nyerere", lat: -6.8781, lon: 39.2026, country: "Tanzanie" },
+            { id: "EBB", name: "Entebbe (Ouganda)", lat: 0.0424, lon: 32.4435, country: "Ouganda" },
+            { id: "KGL", name: "Kigali (Rwanda)", lat: -1.9686, lon: 30.1395, country: "Rwanda" },
+            { id: "DUR", name: "Durban King Shaka", lat: -29.6144, lon: 31.1197, country: "Afrique du Sud" },
+            { id: "PLZ", name: "Port Elizabeth Intl", lat: -33.9846, lon: 25.6173, country: "Afrique du Sud" },
+            { id: "GRJ", name: "George Airport", lat: -34.0056, lon: 22.3789, country: "Afrique du Sud" },
+            { id: "WDH", name: "Windhoek Hosea Kutako", lat: -22.4799, lon: 17.4709, country: "Namibie" },
+            { id: "VFA", name: "Victoria Falls", lat: -18.0959, lon: 25.8390, country: "Zimbabwe" },
 
             // --- AMÉRIQUE DU NORD (AJOUTS) ---
-            { id: "JFK", name: "New York JFK", lat: 40.6413, lon: -73.7781 },
-            { id: "LAX", name: "Los Angeles Intl", lat: 33.9416, lon: -118.4085 },
-            { id: "ORD", name: "Chicago O'Hare", lat: 41.9742, lon: -87.9073 },
-            { id: "MIA", name: "Miami Intl", lat: 25.7959, lon: -80.2870 },
-            { id: "YYZ", name: "Toronto Pearson", lat: 43.6777, lon: -79.6248 },
-            { id: "YVR", name: "Vancouver Intl", lat: 49.1967, lon: -123.1815 },
-            { id: "MEX", name: "Mexico City Benito Juárez", lat: 19.4361, lon: -99.0719 },
-            { id: "SFO", name: "San Francisco Intl", lat: 37.6213, lon: -122.3790 },
-            { id: "DEN", name: "Denver Intl", lat: 39.8561, lon: -104.6737 },
-            { id: "YUL", name: "Montréal-Trudeau", lat: 45.4657, lon: -73.7455 },
-            { id: "HNL", name: "Honolulu (Hawaï)", lat: 21.3186, lon: -157.9225 },
-            { id: "LAS", name: "Las Vegas McCarran", lat: 36.0840, lon: -115.1537 },
+            { id: "JFK", name: "New York JFK", lat: 40.6413, lon: -73.7781, country: "USA" },
+            { id: "LAX", name: "Los Angeles Intl", lat: 33.9416, lon: -118.4085, country: "USA" },
+            { id: "ORD", name: "Chicago O'Hare", lat: 41.9742, lon: -87.9073, country: "USA" },
+            { id: "MIA", name: "Miami Intl", lat: 25.7959, lon: -80.2870, country: "USA" },
+            { id: "YYZ", name: "Toronto Pearson", lat: 43.6777, lon: -79.6248, country: "Canada" },
+            { id: "YVR", name: "Vancouver Intl", lat: 49.1967, lon: -123.1815, country: "Canada" },
+            { id: "MEX", name: "Mexico City Benito Juárez", lat: 19.4361, lon: -99.0719, country: "Mexique" },
+            { id: "SFO", name: "San Francisco Intl", lat: 37.6213, lon: -122.3790, country: "USA" },
+            { id: "DEN", name: "Denver Intl", lat: 39.8561, lon: -104.6737, country: "USA" },
+            { id: "YUL", name: "Montréal-Trudeau", lat: 45.4657, lon: -73.7455, country: "Canada" },
+            { id: "HNL", name: "Honolulu (Hawaï)", lat: 21.3186, lon: -157.9225, isIsland: true, country: "USA" },
+            { id: "LAS", name: "Las Vegas McCarran", lat: 36.0840, lon: -115.1537, country: "USA" },
+            { id: "SEA", name: "Seattle-Tacoma", lat: 47.4502, lon: -122.3088, country: "USA" },
+            { id: "DFW", name: "Dallas/Fort Worth", lat: 32.8998, lon: -97.0403, country: "USA" },
+            { id: "IAH", name: "Houston George Bush", lat: 29.9902, lon: -95.3368, country: "USA" },
+            { id: "SNA", name: "Orange County (LA)", lat: 33.6762, lon: -117.8675, country: "USA" },
+            { id: "OAK", name: "Oakland Intl", lat: 37.7126, lon: -122.2132, country: "USA" },
+            { id: "SXM", name: "Saint-Martin", lat: 18.0410, lon: -63.1090, isIsland: true, country: "Sint Maarten" },
+            { id: "SBH", name: "Saint-Barthélemy", lat: 17.9044, lon: -62.8437, isIsland: true, country: "France" },
+            { id: "PTP", name: "Guadeloupe", lat: 16.2635, lon: -61.5318, isIsland: true, country: "France" },
+            { id: "FDF", name: "Martinique", lat: 14.5910, lon: -61.0032, isIsland: true, country: "France" },
+            { id: "NAS", name: "Nassau (Bahamas)", lat: 25.0389, lon: -77.4662, isIsland: true, country: "Bahamas" },
+            { id: "PUJ", name: "Punta Cana", lat: 18.5674, lon: -68.3634, isIsland: true, country: "République Dominicaine" },
+            { id: "MBJ", name: "Montego Bay", lat: 18.5037, lon: -77.9133, isIsland: true, country: "Jamaïque" },
 
             // --- AMÉRIQUE DU SUD (AJOUTS) ---
-            { id: "GRU", name: "São Paulo Guarulhos", lat: -23.4356, lon: -46.4731 },
-            { id: "EZE", name: "Buenos Aires Ezeiza", lat: -34.8222, lon: -58.5358 },
-            { id: "BOG", name: "Bogota El Dorado", lat: 4.7016, lon: -74.1469 },
-            { id: "LIM", name: "Lima Jorge Chávez", lat: -12.0219, lon: -77.1143 },
-            { id: "SCL", name: "Santiago Comodoro Arturo", lat: -33.3930, lon: -70.7858 },
-            { id: "GIG", name: "Rio de Janeiro Galeão", lat: -22.8100, lon: -43.2506 },
+            { id: "GRU", name: "São Paulo Guarulhos", lat: -23.4356, lon: -46.4731, country: "Brésil" },
+            { id: "EZE", name: "Buenos Aires Ezeiza", lat: -34.8222, lon: -58.5358, country: "Argentine" },
+            { id: "BOG", name: "Bogota El Dorado", lat: 4.7016, lon: -74.1469, country: "Colombie" },
+            { id: "LIM", name: "Lima Jorge Chávez", lat: -12.0219, lon: -77.1143, country: "Pérou" },
+            { id: "SCL", name: "Santiago Comodoro Arturo", lat: -33.3930, lon: -70.7858, country: "Chili" },
+            { id: "GIG", name: "Rio de Janeiro Galeão", lat: -22.8100, lon: -43.2506, country: "Brésil" },
+            { id: "BSB", name: "Brasília Intl", lat: -15.8697, lon: -47.9208, country: "Brésil" },
+            { id: "CNF", name: "Belo Horizonte Confins", lat: -19.6244, lon: -43.9719, country: "Brésil" },
+            { id: "COR", name: "Córdoba", lat: -31.3100, lon: -64.2081, country: "Argentine" },
+            { id: "MDZ", name: "Mendoza El Plumerillo", lat: -32.8317, lon: -68.7928, country: "Argentine" },
+            { id: "ANF", name: "Antofagasta (Chili)", lat: -23.4445, lon: -70.4451, country: "Chili" },
+            { id: "MDE", name: "Medellín José María Córdova", lat: 6.1645, lon: -75.4231, country: "Colombie" },
+            { id: "CLO", name: "Cali Alfonso Bonilla Aragón", lat: 3.5432, lon: -76.3816, country: "Colombie" },
+            { id: "UIO", name: "Quito Mariscal Sucre", lat: -0.1292, lon: -78.3575, country: "Équateur" },
+            { id: "GYE", name: "Guayaquil", lat: -2.1509, lon: -79.8835, country: "Équateur" },
+            { id: "VVI", name: "Santa Cruz Viru Viru", lat: -17.6447, lon: -63.1353, country: "Bolivie" },
 
             // --- ASIE (AJOUTS) ---
-            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798 },
-            { id: "NRT", name: "Tokyo Narita", lat: 35.7720, lon: 140.3929 },
-            { id: "ICN", name: "Séoul Incheon", lat: 37.4602, lon: 126.4407 },
-            { id: "SIN", name: "Singapour Changi", lat: 1.3644, lon: 103.9915 },
-            { id: "HKG", name: "Hong Kong Intl", lat: 22.3080, lon: 113.9185 },
-            { id: "DXB", name: "Dubaï Intl", lat: 25.2532, lon: 55.3657 },
-            { id: "BKK", name: "Bangkok Suvarnabhumi", lat: 13.6900, lon: 100.7501 },
-            { id: "DEL", name: "New Delhi Indira Gandhi", lat: 28.5562, lon: 77.1000 },
-            { id: "BJS", name: "Pékin Capital", lat: 40.0799, lon: 116.6031 },
-            { id: "DOH", name: "Doha Hamad", lat: 25.2731, lon: 51.6081 },
-            { id: "KUL", name: "Kuala Lumpur Intl", lat: 2.7456, lon: 101.7072 },
-            { id: "DPS", name: "Bali Denpasar", lat: -8.7482, lon: 115.1672 },
-            { id: "SGN", name: "Hô Chi Minh-Ville", lat: 10.8185, lon: 106.6588 },
-            { id: "MLE", name: "Malé (Maldives)", lat: 4.1918, lon: 73.5291 },
+            { id: "HND", name: "Tokyo Haneda", lat: 35.5494, lon: 139.7798, country: "Japon" },
+            { id: "NRT", name: "Tokyo Narita", lat: 35.7720, lon: 140.3929, country: "Japon" },
+            { id: "ICN", name: "Séoul Incheon", lat: 37.4602, lon: 126.4407, country: "Corée du Sud" },
+            { id: "SIN", name: "Singapour Changi", lat: 1.3644, lon: 103.9915, country: "Singapour" },
+            { id: "HKG", name: "Hong Kong Intl", lat: 22.3080, lon: 113.9185, country: "Hong Kong" },
+            { id: "DXB", name: "Dubaï Intl", lat: 25.2532, lon: 55.3657, country: "Émirats Arabes Unis" },
+            { id: "BKK", name: "Bangkok Suvarnabhumi", lat: 13.6900, lon: 100.7501, country: "Thaïlande" },
+            { id: "DEL", name: "New Delhi Indira Gandhi", lat: 28.5562, lon: 77.1000, country: "Inde" },
+            { id: "BJS", name: "Pékin Capital", lat: 40.0799, lon: 116.6031, country: "Chine" },
+            { id: "DOH", name: "Doha Hamad", lat: 25.2731, lon: 51.6081, country: "Qatar" },
+            { id: "KUL", name: "Kuala Lumpur Intl", lat: 2.7456, lon: 101.7072, country: "Malaisie" },
+            { id: "DPS", name: "Bali Denpasar", lat: -8.7482, lon: 115.1672, isIsland: true, country: "Indonésie" },
+            { id: "SGN", name: "Hô Chi Minh-Ville", lat: 10.8185, lon: 106.6588, country: "Vietnam" },
+            { id: "MLE", name: "Malé (Maldives)", lat: 4.1918, lon: 73.5291, isIsland: true, country: "Maldives" },
+            { id: "CGK", name: "Jakarta Soekarno-Hatta", lat: -6.1256, lon: 106.6559, country: "Indonésie" },
+            { id: "MNL", name: "Manille Ninoy Aquino", lat: 14.5086, lon: 121.0194, isIsland: true, country: "Philippines" },
+            { id: "AUH", name: "Abou Dabi Intl", lat: 24.4330, lon: 54.6511, country: "Émirats Arabes Unis" }, 
+            { id: "SHJ", name: "Sharjah Intl", lat: 25.3286, lon: 55.5172, country: "Émirats Arabes Unis" }, 
+            { id: "GMP", name: "Séoul Gimpo", lat: 37.5583, lon: 126.7906, country: "Corée du Sud" },
+            { id: "KIX", name: "Osaka Kansai", lat: 34.4320, lon: 135.2304, country: "Japon" },
+            { id: "PVG", name: "Shanghai Pudong", lat: 31.1443, lon: 121.8083, country: "Chine" },
+            { id: "SHA", name: "Shanghai Hongqiao", lat: 31.1979, lon: 121.3363, country: "Chine" },
+            { id: "CAN", name: "Guangzhou Baiyun", lat: 23.3924, lon: 113.2988, country: "Chine" },
+            { id: "SZX", name: "Shenzhen Bao'an", lat: 22.6393, lon: 113.8107, country: "Chine" },
+            { id: "TPE", name: "Taipei Taoyuan", lat: 25.0797, lon: 121.2342, isIsland: true, country: "Taïwan" },
+            { id: "ITM", name: "Osaka Itami", lat: 34.7855, lon: 135.4382, country: "Japon" },
+            { id: "CTS", name: "Sapporo New Chitose", lat: 42.7752, lon: 141.6923, country: "Japon" },
+            { id: "BOM", name: "Mumbai", lat: 19.0896, lon: 72.8656, country: "Inde" },
+            { id: "BLR", name: "Bangalore", lat: 13.1986, lon: 77.7066, country: "Inde" },
+            { id: "DAD", name: "Da Nang Intl", lat: 16.0439, lon: 108.1994, country: "Vietnam" },
+            { id: "SVO", name: "Moscou Sheremetyevo", lat: 55.9726, lon: 37.4146, country: "Russie" },
+            { id: "VKO", name: "Moscou Vnukovo", lat: 55.5915, lon: 37.2615, country: "Russie" },
+            { id: "LED", name: "St-Pétersbourg", lat: 59.8003, lon: 30.2625, country: "Russie" },
+            { id: "OVB", name: "Novossibirsk", lat: 55.0126, lon: 82.6507, country: "Russie" },
+            { id: "VVO", name: "Vladivostok", lat: 43.3990, lon: 132.1480, country: "Russie" },
+            { id: "KGD", name: "Kaliningrad", lat: 54.8900, lon: 20.5926, country: "Russie" },
+            { id: "AER", name: "Sotchi Intl", lat: 43.4499, lon: 39.9566, country: "Russie" },
+            { id: "ALA", name: "Almaty Intl", lat: 43.3520, lon: 77.0405, country: "Kazakhstan" },
+            { id: "TAS", name: "Tachkent Intl", lat: 41.2579, lon: 69.2812, country: "Ouzbékistan" },
+            { id: "GYD", name: "Bakou", lat: 40.4675, lon: 50.0467, country: "Azerbaïdjan" },
 
             // --- OCÉANIE ---
-            { id: "SYD", name: "Sydney Kingsford Smith", lat: -33.9399, lon: 151.1753 },
-            { id: "AKL", name: "Auckland Airport", lat: -37.0082, lon: 174.7850 },
-            { id: "MEL", name: "Melbourne Airport", lat: -37.6690, lon: 144.8410 },
-            { id: "BNE", name: "Brisbane Airport", lat: -27.3842, lon: 153.1175 },
-            { id: "PPT", name: "Tahiti Faa'a", lat: -17.5569, lon: -149.6060 },
-            { id: "NOU", name: "Nouméa La Tontouta", lat: -22.0145, lon: 166.2130 },
-            { id: "OOL", name: "Gold Coast", lat: -28.1644, lon: 153.5047 }
+            { id: "SYD", name: "Sydney Kingsford Smith", lat: -33.9399, lon: 151.1753, country: "Australie" },
+            { id: "AKL", name: "Auckland Airport", lat: -37.0082, lon: 174.7850, country: "Nouvelle-Zélande" },
+            { id: "MEL", name: "Melbourne Airport", lat: -37.6690, lon: 144.8410, country: "Australie" },
+            { id: "BNE", name: "Brisbane Airport", lat: -27.3842, lon: 153.1175, country: "Australie" },
+            { id: "PPT", name: "Tahiti Faa'a", lat: -17.5569, lon: -149.6060, country: "Polynésie Française" },
+            { id: "NOU", name: "Nouméa La Tontouta", lat: -22.0145, lon: 166.2130, isIsland: true, country: "Nouvelle-Calédonie" },
+            { id: "OOL", name: "Gold Coast", lat: -28.1644, lon: 153.5047, country: "Australie" },
+            { id: "PER", name: "Perth Airport", lat: -31.9403, lon: 115.9670, country: "Australie" },
+            { id: "CHC", name: "Christchurch Intl", lat: -43.4894, lon: 172.5322, country: "Nouvelle-Zélande" }, 
+            { id: "WLG", name: "Wellington Intl", lat: -41.3272, lon: 174.8076, country: "Nouvelle-Zélande" },
+            { id: "SEZ", name: "Seychelles Intl", lat: -4.6744, lon: 55.5217, isIsland: true, country: "Seychelles" },
+            { id: "NAN", name: "Fidji (Nadi Intl)", lat: -17.7554, lon: 177.4412, isIsland: true, country: "Fidji" },
+            { id: "BOB", name: "Bora Bora", lat: -16.4444, lon: -151.7514, isIsland: true, country: "Polynésie Française" }, 
+            { id: "GUM", name: "Guam", lat: 13.4839, lon: 144.7972, isIsland: true, country: "Guam" }
         ];
 
         let map, planeMarker, flightLine;
@@ -830,19 +1245,54 @@
 
         // Affiche tous les points bleus
         function displayAirportsOnMap() {
-            airports.forEach(airport => {
-                const marker = L.circleMarker([airport.lat, airport.lon], {
-                    color: '#1a2a6c', fillColor: '#1778bd',
-                    fillOpacity: 0.8, radius: 6
-                }).addTo(selectMap);
-        
-                // Ajout d'une propriété custom pour retrouver l'ID
-                marker.airportId = airport.id;
-                marker.airportName = airport.name;
+            console.log("Démarrage de l'affichage des aéroports...");
+            // 1. Nettoyage sécurisé
+            if (selectMarkers) {
+                selectMarkers.forEach(m => selectMap.removeLayer(m));
+                selectMarkers = [];
+            }
 
-                // Interaction au clic
-                marker.on('click', () => handleMarkerClick(marker, airport));
-                selectMarkers.push(marker);
+            // 2. Récupération de l'historique
+            const logData = localStorage.getItem('focusFlightLog');
+            const logbook = logData ? JSON.parse(logData) : [];
+            console.log("Vols trouvés dans l'historique:", logbook.length);
+    
+            // 3. Créer un Set des IDs visités (plus rapide pour la recherche)
+            // On regarde à la fois dans 'from' et 'to' au cas où l'ID y est stocké directement
+            const visitedIDs = new Set();
+            logbook.forEach(f => {
+                if (f.key && typeof f.key === 'string') {
+                    const ids = f.key.split('-'); // On sépare la clé "BRU-CAG"
+                    visitedIDs.add(ids[0]);
+                    visitedIDs.add(ids[1]);
+                    console.log("séparation du string f.key en 2 ")
+                } else {
+                    console.log("N'est pas rentré dans le 'if' !!");
+                }
+            });
+
+            airports.forEach(airport => {
+                
+                // On s'assure que les coordonnées sont bien des nombres
+                const lat = parseFloat(airport.lat);
+                const lon = parseFloat(airport.lon);
+                // Définir les couleurs en fonction de la visite
+                const isVisited = visitedIDs.has(airport.id);
+
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const marker = L.circleMarker([lat, lon], {
+                        className: isVisited ? 'marker-visited' : 'marker-normal'
+                    }).addTo(selectMap);
+                    marker.setRadius(isVisited ? 4 : 7);
+
+                    // Ajout d'une propriété custom pour retrouver l'ID
+                    marker.airportId = airport.id;
+                    marker.airportName = airport.name;
+
+                    // Interaction au clic
+                    marker.on('click', () => handleMarkerClick(marker, airport));
+                    selectMarkers.push(marker);
+                }
             });
         }
 
@@ -853,7 +1303,7 @@
                 tempOrigin = data;
         
                 // Changement visuel : Vert pour départ
-                marker.setStyle({ color: 'green', fillColor: '#2ecc71', radius: 10 });
+                setDeparture(marker);
                 marker.bindPopup(`🛫 Départ : ${data.name}`).openPopup();
         
             // Cas 2: Sélection de l'Arrivée (si différent du départ)
@@ -861,7 +1311,7 @@
                 tempDest = data;
         
                 // Changement visuel : Rouge pour arrivée
-                marker.setStyle({ color: 'red', fillColor: '#e74c3c', radius: 10 });
+                setArrival(marker);
         
                 // Calcul du temps
                 const dist = calculateDistance(tempOrigin.lat, tempOrigin.lon, tempDest.lat, tempDest.lon);
@@ -891,6 +1341,24 @@
             }
         }
 
+        function setDeparture(marker) {
+            // On retire les autres classes possibles et on met la verte
+            L.DomUtil.removeClass(marker._path, 'marker-normal');
+            L.DomUtil.removeClass(marker._path, 'marker-visited');
+            L.DomUtil.addClass(marker._path, 'marker-departure');
+    
+            marker.setRadius(10); // On force la taille agrandie
+        }
+
+        // Pour l'arrivée
+        function setArrival(marker) {
+            L.DomUtil.removeClass(marker._path, 'marker-normal');
+            L.DomUtil.removeClass(marker._path, 'marker-visited');
+            L.DomUtil.addClass(marker._path, 'marker-arrival');
+    
+            marker.setRadius(10); // On force la taille agrandie
+        }
+
         // Reset visuel
         function resetSelectionMap() {
             tempOrigin = null;
@@ -898,10 +1366,28 @@
             if (flightPathLine) selectMap.removeLayer(flightPathLine);
             document.getElementById('btn-confirm-route').classList.add('hidden');
             selectMap.closePopup();
-    
+            
+            // On récupère les IDs visités pour savoir quel style remettre
+            const logData = localStorage.getItem('focusFlightLog');
+            const logbook = logData ? JSON.parse(logData) : [];
+            const visitedIDs = new Set();
+            logbook.forEach(f => {
+                if (f.key) f.key.split('-').forEach(id => visitedIDs.add(id));
+            });
             // Remet tous les marqueurs à zéro
             selectMarkers.forEach(m => {
-                m.setStyle({ color: '#1a2a6c', fillColor: '#1778bd', radius: 6 });
+                L.DomUtil.removeClass(m._path, 'marker-departure');
+                L.DomUtil.removeClass(m._path, 'marker-arrival');
+                L.DomUtil.removeClass(m._path, 'marker-normal');
+                L.DomUtil.removeClass(m._path, 'marker-visited');
+
+                const isVisited = visitedIDs.has(m.airportId);
+                // 3. On applique la bonne classe et le bon rayon
+                const targetClass = isVisited ? 'marker-visited' : 'marker-normal';
+                L.DomUtil.addClass(m._path, targetClass);
+            
+                // Forcer le rayon
+                m.setRadius(isVisited ? 4 : 7);
             });
         }
 
@@ -1058,8 +1544,235 @@
                     document.getElementById('menu-toggle').classList.remove('hidden');
                     document.getElementById('theme-switcher').classList.remove('hidden');
                     document.getElementById('flight-info').textContent = "BIENVENUE À DESTINATION !";
+
+                    // On récupère les infos du vol actuel
+                    const depart = airports.find(x => x.id === originSelect.value);
+                    const arrivee = airports.find(x => x.id === destSelect.value);
+                    const temps = getFlightDuration(depart.lat, depart.lon, arrivee.lat, arrivee.lon);
+
+                    // On appelle la fonction de sauvegarde
+                    saveFlightToLogbook(depart, arrivee, temps);
                 }
             }, 1000);
+        }
+
+        function saveFlightToLogbook(startObj, endObj, duration) {
+            // 1. Récupérer le carnet actuel (ou en créer un vide s'il n'existe pas)
+            let logbook = JSON.parse(localStorage.getItem('focusFlightLog')) || [];
+
+            // On crée une clé unique pour le trajet ; On utilise l'ID (ex: BRU) pour la clé unique
+            const flightKey = `${startObj.id}-${endObj.id}`;
+            // On cherche si ce trajet a déjà été fait
+            const existingFlight = logbook.find(f => f.key === flightKey);
+
+            if (existingFlight) {
+                existingFlight.count += 1;
+                existingFlight.totalTime += duration;
+                existingFlight.lastDate = new Date().toLocaleDateString();
+            } else {
+                logbook.push({
+                    key: flightKey,
+                    from: startObj.name, // On stocke le nom
+                    to: endObj.name,
+                    count: 1,
+                    totalTime: duration,
+                    lastDate: new Date().toLocaleDateString()
+                });
+            }
+
+            localStorage.setItem('focusFlightLog', JSON.stringify(logbook));
+            console.log("Vol enregistré dans le logbook !");
+        }
+
+        function openHistoryModal() {
+            const container = document.getElementById('history-table-body');
+            const logbook = JSON.parse(localStorage.getItem('focusFlightLog')) || [];
+            
+            // CALCUL DU TEMPS TOTAL
+            const totalMinutes = logbook.reduce((acc, flight) => acc + (flight.totalTime || 0), 0);
+    
+            // AFFICHAGE DU TEMPS TOTAL (Formaté en heures si nécessaire)
+            const totalDisplay = document.getElementById('total-focus-time');
+            if (totalMinutes >= 60) {
+                const hours = Math.floor(totalMinutes / 60);
+                const mins = totalMinutes % 60;
+                totalDisplay.innerText = `Total : ${hours}h ${mins}m`;
+            } else {
+                totalDisplay.innerText = `Total : ${totalMinutes} min`;
+            }
+
+            document.getElementById('history-modal').style.display = 'flex';
+    
+            if (logbook.length === 0) {
+                container.innerHTML = `<p style="opacity: 0.6; text-align: center;">Aucun vol dans les archives.</p>`;
+                return;
+            }
+
+            // On génère le HTML pour chaque vol
+            let html = '';
+            logbook.forEach(f => {
+                // On extrait le nom depuis l'objet stocké. 
+                // Si f.from est un objet, on prend .name, sinon on affiche f.from par sécurité.
+                const startName = typeof f.from === 'object' ? f.from.name : f.from;
+                const endName = typeof f.to === 'object' ? f.to.name : f.to;
+
+                html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 15px 0; width: 60%;">
+                            <span style="font-weight: bold; color: var(--accent);">${startName}</span> 
+                            <span style="opacity: 0.5;">➔</span> 
+                            <span style="font-weight: bold; color: var(--accent);">${endName}</span>
+                        </td>
+                        <td style="text-align: center; width: 15%; font-weight: 500;">${f.count}</td>
+                        <td style="text-align: right; width: 25%; font-weight: 500;">${f.totalTime} min</td>
+                    </tr>`;
+            });
+    
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').style.display = 'none';
+            // Optionnel : Fermer la modale si on clique en dehors de la boîte
+            window.onclick = function(event) {
+            const modal = document.getElementById('badge-modal');
+            if (event.target == modal)
+                closeHistoryModal();
+            }
+        }
+
+        function clearHistory() {
+            if (confirm("Voulez-vous vraiment effacer tout votre historique ? \n Cela réinitialisera aussi vos succès ")) {
+                localStorage.removeItem('focusFlightLog');
+                openHistoryModal(); // Rafraîchit l'affichage
+            }
+        }
+
+        function openBadgeModal() {
+            // On affiche la modale avec flex pour le centrage
+            document.getElementById('badge-modal').style.display = 'flex';
+    
+            updateBadges(); // On calcule les succès
+        }
+
+        function closeBadgeModal() {
+            document.getElementById('badge-modal').style.display = 'none';
+        }
+
+        function updateBadges() {
+            const logbook = JSON.parse(localStorage.getItem('focusFlightLog')) || [];
+    
+            // Stats de base
+            const totalHours = logbook.reduce((s, f) => s + (parseInt(f.totalTime) || 0), 0) / 60;
+            const airportsSet = new Set();
+            const islandsSet = new Set();
+            const countriesSet = new Set();
+            let islandStreak = 0;
+            let maxIslandStreak = 0;
+
+            logbook.forEach(f => {
+                if (f.key) {
+                    // On sépare "BRU-JFK" en ["BRU", "JFK"]
+                    const ids = f.key.split('-'); 
+                    const fromId = ids[0];
+                    const toId = ids[1];
+
+                    // On ajoute les deux aéroports au Set (le Set gère les doublons automatiquement)
+                    airportsSet.add(fromId);
+                    airportsSet.add(toId);
+
+                    // Vérification si l'aéroport de destination est une île
+                    const arrivalAirport = airports.find(a => a.id === toId);
+                    if (arrivalAirport) {
+                        // 2. Si c'est une île, on l'ajoute au compteur d'îles
+                        if (arrivalAirport.isIsland) {
+                            islandsSet.add(toId);
+                
+                            // --- LOGIQUE DU SUCCÈS DIFFICILE (Série d'îles) ---
+                            islandStreak++; // On ajoute 1 à la série actuelle
+                            if (islandStreak > maxIslandStreak) {
+                                maxIslandStreak = islandStreak; // On retient le record
+                            }
+                        } else {
+                            // Si on atterrit sur le continent, la série d'îles retombe à zéro !
+                            islandStreak = 0;
+                        }
+                        // 3. On ajoute le pays au compteur (Succès Citoyen du Monde)
+                        // Note : cela ne marchera que si tu as ajouté "country: 'France'" dans ta liste d'aéroports
+                        if (arrivalAirport.country) {
+                            countriesSet.add(arrivalAirport.country);
+                        }
+                    }
+                }
+            });
+
+            const definitions = [
+                { id: 'endurance', title: "Endurance", icon: "⏱️", stat: totalHours, color: "#4caf50", levels: [{t:1, n:"Novice"}, {t:10, n:"Commandant"}, {t:50, n:"Photon"}] },
+                { id: 'globetrotter', title: "Globe-Trotter", icon: "🌍", stat: airportsSet.size, color: "#4caf50", levels: [{t:5, n:"Touriste"}, {t:15, n:"Voyageur"}, {t:30, n:"PDG Jet"}] },
+                { id: 'island', title: "Island Lover", icon: "🏝️", stat: islandsSet.size, color: "#4caf50", levels: [{t:2, n:"Saut de puce"}, {t:5, n:"Robinson"}, {t:10, n:"Roi"}] },
+                { id: 'assiduite', title: "Assiduité", icon: "🔥", stat: logbook.length, color: "#4caf50", levels: [{t:5, n:"Copilote"}, {t:20, n:"Vétéran"}, {t:100, n:"Légende"}] },
+                { id : 'country_hopper', title: "Citoyen du Monde", icon: "🛂", stat: countriesSet.size, color: "#4caf50", levels: [{t: 3, n: "Expatrié"}, {t: 10, n: "Diplomate"}, {t: 25, n: "Ambassadeur UN"}] },
+                { id: 'island_streak', title: "L'Appel du Large", icon: "🌊", stat: maxIslandStreak, color: "#4caf50", levels: [{t: 3, n: "Vrai Marin"}, {t: 6, n: "Légende des Mers"}, {t: 12, n: "Poséidon"}] }
+            ];
+
+            let html = "";
+            definitions.forEach(badge => {
+                // Trouver le niveau actuel et le prochain
+                const currentLvl = [...badge.levels].reverse().find(l => badge.stat >= l.t) || {n: "Débutant", t: 0};
+                const nextLvl = badge.levels.find(l => badge.stat < l.t);
+        
+                // Calcul du pourcentage de progression
+                let percent = 0;
+                let infoText = "";
+
+                if (nextLvl) {
+                    percent = (badge.stat / nextLvl.t) * 100;
+                    infoText = `${Math.floor(badge.stat)} / ${nextLvl.t} pour ${nextLvl.n}`;
+                } else {
+                    percent = 100; // Maximum atteint
+                    infoText = "Niveau Maximum atteint !";
+                }
+
+                html += `
+                <div class="badge-card">
+                    <div style="font-size: 1.5em;">${badge.icon}</div>
+                    <h4>${badge.title}</h4>
+                    <div class="current-rank">${currentLvl.n}</div>
+                    <div class="badge-progress-container">
+                        <div class="badge-progress-bar" style="width: ${percent}%; background: ${badge.color}; box-shadow: 0 0 12px ${badge.color}CC;"></div>
+                    </div>
+                    <div class="next-step">${infoText}</div>
+                </div>`;
+            });
+
+            document.getElementById('badge-list-container').innerHTML = html;
+        }
+
+        function showAllBadgesHelp() {
+
+            // Cette partie suppose que 'definitions' est accessible. 
+            // Si ce n'est pas le cas, tu peux le copier ici ou le déclarer en dehors de updateBadges
+            const helpContent = `
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 15px;"><strong>⏱️ Endurance :</strong> Le ciel ne connaît pas de frontières pour ceux qui ne comptent pas leurs heures. Ce trophée récompense votre temps passé aux commandes. (calculé en heures).</li>
+                    <li style="margin-bottom: 15px;"><strong>🌍 Globe-Trotter :</strong> Chaque piste d'atterrissage est une nouvelle histoire. Cumulez les escales à travers le monde pour devenir une icône de l'aviation. Nombre total d'aéroports uniques visités. (départs et arrivées).</li>
+                    <li style="margin-bottom: 15px;"><strong>🏝️ Island Lover :</strong> Il y a quelque chose de magique à poser ses roues sur un bout de terre entouré d'eau. Visitez des destinations insulaires uniques. Nombre total d'îles différentes où vous avez atterri.</li>
+                    <li style="margin-bottom: 15px;"><strong>🔥 Assiduité :</strong> La régularité est la marque des plus grands pilotes. Enchaînez les missions pour graver votre nom dans la légende de Focus Airlines. Cumul de tous vos vols enregistrés dans Focus Airlines.</li>
+                    <li style="margin-bottom: 15px;"><strong>🛂 Citoyen du Monde :</strong> Franchir les frontières, c'est ouvrir son esprit. Collectionnez les tampons sur votre passeport virtuel en visitant différents pays. Nombre de pays différents découverts lors de vos escales.</li>
+                    <li style="margin-bottom: 15px;"><strong>🌊 L'Appel du Large :</strong> Un défi périlleux : enchaînez les vols d'île en île sans jamais toucher le continent. Écoutez le chant des sirènes, mais ne perdez pas le cap ! Votre record de vols successifs entre deux îles (se brise si vous atterrissez sur le continent).</li>
+                </ul>
+            `;
+
+            // Utilisation de l'overlay personnalisé que nous avons créé juste avant
+            const overlay = document.getElementById('info-overlay');
+            if (overlay) {
+                document.getElementById('info-title').innerText = "À propos des succès";
+                document.getElementById('info-text').innerHTML = helpContent;
+                document.getElementById('info-text').style.textAlign = "left"; // On aligne le texte à gauche pour la liste
+                overlay.style.display = 'flex';
+            } else {
+                alert(helpContent);
+            }
         }
 
         function updateUI() {
