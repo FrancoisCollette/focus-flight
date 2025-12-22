@@ -579,7 +579,7 @@
             /* Mode PAYSAGE (Horizontal) */
             @media (orientation: landscape) {
                 #settings-panel { 
-                    width: 90vw; top: 20px; /* On le colle en haut pour gagner de la place */
+                    width: 80vw; top: 20px !important; /* On le colle en haut pour gagner de la place */
                     height: 50vh; 
                 }
                 .timer-large { font-size: 15vh; }
@@ -587,7 +587,7 @@
                 #map { height: 180px; width: 90%; } /* Réduit la carte pour voir le reste */
 
                 #badge-modal .modal-content {
-                    width: 75vw !important; max-width: 800px; height: 80vh !important;
+                    width: 80vw !important; max-width: 800px; height: 80vh !important;
                     display: flex; flex-direction: column; padding: 15px;
                 }
                 #badge-list-container {
@@ -740,15 +740,14 @@
 
             <div class="modal-header">
                 <button class="global-info-btn" onclick="showAllBadgesHelp()">ⓘ</button>
-                <h2>Tableau des Trophées</h2>
             </div>
 
-            <div class="badge-header" style="text-align: center; margin-bottom: 25px;">
+            <div class="badge-header" style="text-align: center; margin-bottom: 25px; ">
                 <h2 style="margin: 0; color: var(--accent);">Tableau des Trophées</h2>
                 <p style="font-size: 0.9em; opacity: 0.7;">Vos exploits en tant que pilote chez Focus Airlines</p>
             </div>
 
-            <div id="badge-list-container" style="max-height: 40vh; overflow-y: auto; padding-right: 10px;">
+            <div id="badge-list-container" style="max-height: 55vh; overflow-y: auto; padding-right: 10px;">
                 <p style="text-align: center; opacity: 0.5; padding: 20px;">Chargement de vos médailles...</p>
             </div>
 
