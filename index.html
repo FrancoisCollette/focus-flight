@@ -574,7 +574,7 @@
 
             /* Mode PORTRAIT (Vertical) */
             @media (orientation: portrait) {
-                #settings-panel { width: 85vw; top: 130px; }
+                #settings-panel { width: 85vw; top: 130px;}
                 .timer-large { font-size: 18vw; }
             }
 
@@ -582,14 +582,14 @@
             @media (orientation: landscape) {
                 #settings-panel { 
                     width: 90vw; top: 20px; /* On le colle en haut pour gagner de la place */
-                    height: calc(90vh - 40px); 
+                    height: 50vh; 
                 }
                 .timer-large { font-size: 15vh; }
                 #flight-screen { padding-top: 20px; }
                 #map { height: 180px; width: 90%; } /* Réduit la carte pour voir le reste */
 
                 #badge-modal .modal-content {
-                    width: 90vw !important; max-width: 800px; height: 90vh !important;
+                    width: 90vw !important; max-width: 800px; height: 80vh !important;
                     display: flex; flex-direction: column; padding: 15px;
                 }
                 #badge-list-container {
