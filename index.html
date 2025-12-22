@@ -42,7 +42,7 @@
             color: var(--text-color);
             transition: background 0.5s ease; /* Animation fluide */
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
+            min-height: 100vh; overflow: auto;
         }
         
         /* -- BOUTON DE CHOIX DU THEME -- */
@@ -65,10 +65,18 @@
 
         #settings-panel {
             position: fixed; top: 140px; left: 20px;
-            width: 250px; max-width: 100vw; z-index: 1001;
+            width: 250px; max-width: calc(100vw - 40px); max-height: calc(100vh - 100px);
+            z-index: 1001;
             text-align: left;
             display: flex; flex-direction: column;
-            padding: 20px; box-sizing: border-box; /* Important pour que le padding n'élargisse pas le menu */
+            padding: 20px; box-sizing: border-box; overflow: auto; gap: 10px;
+        }
+
+        /* On s'assure que les boutons dans le menu ne s'écrasent pas */
+        #settings-panel .menu-btn-history, 
+        #settings-panel .btn-random {
+            flex-shrink: 0; 
+            margin: 5px 0;
         }
 
         .setting-item {
@@ -556,31 +564,31 @@
         .current-rank { font-size: 0.85em; font-weight: bold; color: var(--accent); }
 
 
+        
         @media (max-width: 600px) {
-            @media (orientation: landscape) or (max-height: 500px){
-                body { overflow-x: auto !important ; height: auto; min-height: 100vh; width: auto; min-width: 100vw; }
-                .timer-large { font-size: 10vh; }
-                #settings-panel { width: 100vw; padding-bottom: 40px; overflow-y: auto; }
-                #flight-screen {overflow-y: auto; overflow-x: auto;    /* Active le scroll vertical et horizontal interne au menu */}
+            /* Paramètres communs aux mobiles */
+            .glass-card { width: 95%; padding: 20px; margin: 20px auto; position: relative; }
+            .btn-takeoff { position: fixed; bottom: 20px; right: 20px; padding: 15px 30px; z-index: 100; }
+            #history-list-box { max-height: 60vh; }
+            #badge-list-container { grid-template-columns: 1fr; }
+
+            /* Mode PORTRAIT (Vertical) */
+            @media (orientation: portrait) {
+                #settings-panel { width: 85vw; top: 130px; }
+                .timer-large { font-size: 18vw; }
             }
-            @media (orientation: portrait){
-                body { overflow-y: auto !important ; height: auto; min-height: 100vh; }
-                .timer-large { font-size: 15vw; } /* Plus gros sur mobile */
-                #settings-panel { width: 50vw; }
-                #badge-list-container { grid-template-columns: 1fr; gap: 15px; } /* 1 seule colonne sur petit mobile */
+
+            /* Mode PAYSAGE (Horizontal) */
+            @media (orientation: landscape) {
+                #settings-panel { 
+                    width: 90vw; 
+                    top: 20px; /* On le colle en haut pour gagner de la place */
+                    height: calc(100vh - 40px); 
+                }
+                .timer-large { font-size: 15vh; }
+                #flight-screen { padding-top: 20px; }
+                #map { height: 180px; width: 90%; } /* Réduit la carte pour voir le reste */
             }
-
-            .glass-card { width: 90%; padding: 20px; margin : 20px; position : relative;}
-            .btn-takeoff { position: fixed; bottom: 20px; right: 20px; padding: 15px 30px; z-index : 100; }
-
-            main, .container { padding-bottom: 100px; }
-
-            #history-list-box { max-height: 60vh; } /* On donne un peu plus d'espace sur mobile */ 
-    
-            /* On réduit légèrement la taille du texte pour que ça tienne sur une ligne */
-            #history-table-body td { font-size: 0.85em; }
-
-            #info-overlay .info-box { width: 90vw; max-width: none; height: 70vh; }
         }
   
     </style>
@@ -1005,7 +1013,7 @@
             { id: "DKR", name: "Dakar (Ancien)", lat: 14.7397, lon: -17.4902, country: "Sénégal" },
             { id: "ADD", name: "Addis-Abeba Bole", lat: 8.9779, lon: 38.7993, country: "Éthiopie" },
             { id: "ZNZ", name: "Zanzibar Abeid Amani Karume", lat: -6.2220, lon: 39.2247, isIsland: true, country: "Tanzanie" },
-            { id: "DAR", name: "Dar es Salam Julius Nyerere", lat: -6.8781, lon: 39.2026, isIsland: true, country: "Tanzanie" },
+            { id: "DAR", name: "Dar es Salam Julius Nyerere", lat: -6.8781, lon: 39.2026, country: "Tanzanie" },
             { id: "EBB", name: "Entebbe (Ouganda)", lat: 0.0424, lon: 32.4435, country: "Ouganda" },
             { id: "KGL", name: "Kigali (Rwanda)", lat: -1.9686, lon: 30.1395, country: "Rwanda" },
             { id: "DUR", name: "Durban King Shaka", lat: -29.6144, lon: 31.1197, country: "Afrique du Sud" },
