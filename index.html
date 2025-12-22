@@ -603,6 +603,21 @@
     </style>
 </head>
 <body>
+    <div style="background-color: #0b132b;">
+        <div id="loading-fallback" style="
+            position: fixed; 
+            inset: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            color: white; 
+            font-family: sans-serif; 
+            z-index: 9999;
+            background: #105065;">
+            ✈️ Chargement de Focus Flight...
+        </div>
+    </div>
+
     <button id="menu-toggle" onclick="toggleMenu()">⚙️</button>
 
     <button id="strict-toggle-btn" class="glass-btn" onclick="toggleStrictVisual()" title="Mode Strict">🔓</button>
@@ -1927,6 +1942,26 @@
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
+
+    // efface le témoin de chargement une fois le script lancé
+    // On attend que toute la page (images, scripts, styles) soit chargée
+    window.addEventListener('load', () => {
+        // On définit le délai d'une seconde (1000 millisecondes)
+        setTimeout(() => {
+            const fallback = document.getElementById('loading-fallback');
+        
+            if (fallback) {
+                // Transition fluide vers l'opacité 0
+                fallback.style.transition = 'opacity 0.8s ease';
+                fallback.style.opacity = '0';
+            
+                // On retire l'élément du DOM après l'animation pour libérer de la mémoire
+                setTimeout(() => {
+                    fallback.remove();
+                }, 800);
+            }
+        }, 1000); // 1000ms = 1 seconde
+});
     </script>
 </body>
 </html>
