@@ -603,7 +603,7 @@
     </style>
 </head>
 <body>
-    <div style="background-color: #0b132b;">
+    <div style="background-color: #0b132b !important; margin: 0">
         <div id="loading-fallback" style="
             position: fixed; 
             inset: 0; 
@@ -869,6 +869,55 @@
             }
         }
 
+        let wakeLock = null;
+        let pauseStartTime = null; // Moment où l'utilisateur quitte l'app
+        let totalPausedTime = 0;   // Cumul des millisecondes passées hors de l'app
+
+        // Fonction pour activer le verrouillage de l'écran
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log("L'écran restera allumé ! ✈️");
+                }
+            } catch (err) {
+                console.error("Erreur de Wake Lock :", err);
+            }
+        }
+        // Fonction pour libérer l'écran
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release();
+                wakeLock = null;
+                console.log("Mise en veille autorisée à nouveau.");
+            }
+        }
+        document.addEventListener('visibilitychange', async () => { //relance le wakeLock et arrête de comptabiliser le temps (en mode srtict) si on quitte puis reviens sur la page
+            const isStrict = document.getElementById('strict-mode').checked;
+            const isFlying = document.getElementById('flight-screen').style.display === 'flex';
+            if (!isFlying || !isStrict) return;
+
+            if (document.visibilityState === 'hidden') {
+                // L'utilisateur quitte : on note l'heure précise
+                pauseStartTime = Date.now();
+            } else {
+                // L'utilisateur revient
+                if (pauseStartTime !== null) {
+                    // On calcule combien de temps il est parti (en ms)
+                    const timeAway = Date.now() - pauseStartTime;
+            
+                    // ON DÉCALE L'HEURE DE FIN ! 
+                    // Ton timer "récupère" le temps perdu
+                    flightEndTime = new Date(flightEndTime.getTime() + timeAway);
+            
+                    // On réinitialise pour la prochaine absence
+                    pauseStartTime = null;
+                    alert("MODE STRICT : Le timer a été suspendu pendant votre absence.");
+                    await requestWakeLock();
+                }
+            }
+        });
+
         function toggleStrictVisual() {
             const btn = document.getElementById('strict-toggle-btn');
             const checkbox = document.getElementById('strict-mode');
@@ -886,10 +935,12 @@
                     // Optionnel : cacher le bouton de verrouillage lui-même maintenant qu'il est fermé
                     btn.classList.add('hidden'); 
                     enableFocusPrison();
+                    requestWakeLock();
                 }
             } else {
                 btn.classList.remove('active');
                 btn.innerHTML = "🔓";
+                releaseWakeLock();
             }
         }
 
@@ -1477,6 +1528,7 @@
             const isStrictMode = document.getElementById('strict-mode').checked;
             if (isStrictMode) {
                 enableFocusPrison(); // On lance la "prison"
+                requestWakeLock();
                 // On cache les boutons de réglages et de thème
                 document.getElementById('menu-toggle').classList.add('hidden');
                 document.getElementById('theme-switcher').classList.add('hidden');
@@ -1564,6 +1616,7 @@
                     timerInterval = null;
                     ambientSound.pause(); // On arrête le moteur à l'arrivée
                     disableFocusPrison();
+                    releaseWakeLock();
                     
                     // 2. Séquence de Dings
                     const playDing = () => {
@@ -1961,7 +2014,7 @@
                 }, 800);
             }
         }, 1000); // 1000ms = 1 seconde
-});
+    });
     </script>
 </body>
 </html>
