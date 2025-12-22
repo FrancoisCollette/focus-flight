@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
 
@@ -12,6 +14,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
+        /*<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+        <script>eruda.init();</script>  A mettre dans le script pour avoir un accès direct à la console (utile au débuggage)*/
         :root { 
             --accent: #1778bdcf;
             --bg-color: #c8dff6;
@@ -781,6 +785,10 @@
         </div>
     </div>
 
+    <video id="invisible-video" loop playsinline muted style="display:none;">
+        <source src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAAhtZGF0AAAAfGF2Y0M=" type="video/mp4">
+    </video>
+
     <script>
         let currentTheme = 'dark'; // État initial
         let tileLayer; // On crée une variable pour stocker la couche de la carte
@@ -893,9 +901,10 @@
             }
         }
         document.addEventListener('visibilitychange', async () => { //relance le wakeLock et arrête de comptabiliser le temps (en mode srtict) si on quitte puis reviens sur la page
-            const isStrict = document.getElementById('strict-mode').checked;
+            /*const isStrict = document.getElementById('strict-mode').checked;
+            if (!isStrict) return;  Permet de mettre le timer en pose seulement pendant le mode strict, si commenté le timer se met toujours en pause*/
             const isFlying = document.getElementById('flight-screen').style.display === 'flex';
-            if (!isFlying || !isStrict) return;
+            if (!isFlying) return;
 
             if (document.visibilityState === 'hidden') {
                 // L'utilisateur quitte : on note l'heure précise
@@ -908,11 +917,11 @@
             
                     // ON DÉCALE L'HEURE DE FIN ! 
                     // Ton timer "récupère" le temps perdu
-                    flightEndTime = new Date(flightEndTime.getTime() + timeAway);
+                    flightEndTime = flightEndTime + timeAway;
             
                     // On réinitialise pour la prochaine absence
                     pauseStartTime = null;
-                    alert("MODE STRICT : Le timer a été suspendu pendant votre absence.");
+                    alert("Restez focus!!\nLe timer a été suspendu pendant votre absence.");
                     await requestWakeLock();
                 }
             }
@@ -1508,6 +1517,8 @@
             }
         }
         
+        const videoNoSleep = document.getElementById('invisible-video');
+
         function takeOff() {
             const a = airports.find(x => x.id === originSelect.value);
             const b = airports.find(x => x.id === destSelect.value);
@@ -1529,6 +1540,12 @@
             if (isStrictMode) {
                 enableFocusPrison(); // On lance la "prison"
                 requestWakeLock();
+                try {
+                    videoNoSleep.play();
+                    console.log("Système anti-veille vidéo activé 📺");
+                } catch (err) {
+                    console.log("La lecture vidéo a échoué : ", err);
+                }
                 // On cache les boutons de réglages et de thème
                 document.getElementById('menu-toggle').classList.add('hidden');
                 document.getElementById('theme-switcher').classList.add('hidden');
@@ -1617,6 +1634,7 @@
                     ambientSound.pause(); // On arrête le moteur à l'arrivée
                     disableFocusPrison();
                     releaseWakeLock();
+                    videoNoSleep.pause();
                     
                     // 2. Séquence de Dings
                     const playDing = () => {
@@ -1739,7 +1757,7 @@
         }
 
         function clearHistory() {
-            if (confirm("Voulez-vous vraiment effacer tout votre historique ? \n Cela réinitialisera aussi vos succès ")) {
+            if (confirm("Voulez-vous vraiment effacer tout votre historique ?\nCela réinitialisera aussi vos succès ")) {
                 localStorage.removeItem('focusFlightLog');
                 openHistoryModal(); // Rafraîchit l'affichage
             }
