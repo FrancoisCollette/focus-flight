@@ -739,7 +739,9 @@
     <button class="btn-takeoff" id="btn-go" onclick="takeOff()">DÉCOLLAGE</button>
 
     <div id="flight-screen">
-        <div id="flight-info" style="letter-spacing: 3px; margin-bottom: 10px; opacity: 0.8;">VOL EN COURS VERS <span id="dest-name">...</span></div>
+        <div id="flight-info" style="letter-spacing: 3px; margin-bottom: 10px; opacity: 0.8;">
+            <span id="flight-status">VOL EN COURS VERS</span>
+            <span id="dest-name">...</span></div>
         <div class="timer-large" id="timerDisplay">00:00</div>
         <div class="progress-container"><div id="progress-bar"></div></div>
         <div id="map"></div>
@@ -1568,6 +1570,9 @@
             }
 
             // 3. Réinitialiser le reste de l'UI
+            document.getElementById('flight-status').textContent = "VOL EN COURS VERS"
+            document.getElementById('dest-name').textContent = b.name; // Le nom de l'aéroport d'arrivée
+            document.getElementById('dest-name').style.display = "inline"; // On s'assure qu'il est visible
             document.getElementById('progress-bar').style.width = "0%";
             document.getElementById('timerDisplay').textContent = formatTimeHHMMSS(totalTime);
 
@@ -1660,7 +1665,8 @@
                     document.getElementById('btn-home').classList.remove('hidden');
                     document.getElementById('menu-toggle').classList.remove('hidden');
                     document.getElementById('theme-switcher').classList.remove('hidden');
-                    document.getElementById('flight-info').textContent = "BIENVENUE À DESTINATION !";
+                    document.getElementById('flight-status').textContent = "BIENVENUE À DESTINATION !";
+                    document.getElementById('dest-name').style.display = "none"; // On cache le nom de la ville d'arrivée pour que la phrase soit propre
 
                     // On récupère les infos du vol actuel
                     const depart = airports.find(x => x.id === originSelect.value);
