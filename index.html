@@ -1830,12 +1830,12 @@
             });
 
             const definitions = [
-                { id: 'endurance', title: "Endurance", icon: "⏱️", stat: totalHours, color: "#4caf50", levels: [{t:1, n:"Passager"}, {t:5, n:"Hôte de l'air"}, {t:10, n:"Le temps d'un long courrier"}, {t:18, n:"Copilote"}, {t:30, n:"Commandant"}, {t:50, n:"Photon"}] },
-                { id: 'globetrotter', title: "Globe-Trotter", icon: "🌍", stat: airportsSet.size, color: "#4caf50", levels: [{t:5, n:"Touriste"}, {t:15, n:"Voyageur"}, {t:40, n:"passionné d'aéroports"}, {t:80, n:"PDG Jet"}, {t:150, n:"Adicte à l'aviation"}] },
-                { id: 'island', title: "Island Lover", icon: "🏝️", stat: islandsSet.size, color: "#4caf50", levels: [{t:2, n:"Saut de puce"}, {t:5, n:"Robinson Crusoé"}, {t:10, n:"Mousse"}, {t:18, n:"Capitaine de ferry"}, {t:25, n:"Pirate assidu"}, {t:40, n:"Roi des pirates"}] },
-                { id: 'assiduite', title: "Assiduité", icon: "🔥", stat: logbook.length, color: "#4caf50", levels: [{t:5, n:"Battème de l'air"}, {t:18, n:"Apprenti pilote"}, {t:50, n:"Copilote"}, {t:100, n:"Pilote de ligne"}, {t:250, n:"Vétéran"}, {t:500, n:"Légende"}] },
-                { id : 'country_hopper', title: "Citoyen du Monde", icon: "🛂", stat: countriesSet.size, color: "#4caf50", levels: [{t: 3, n: "Expatrié"}, {t: 12, n: "Président"}, {t: 30, n: "Diplomate"}, {t: 50, n: "Ambassadeur des Nations Unies"}] },
-                { id: 'island_streak', title: "L'Appel du Large", icon: "🌊", stat: maxIslandStreak, color: "#4caf50", levels: [{t: 3, n: "Vrai Marin"}, {t: 6, n: "Légende des Mers"}, {t: 12, n: "Poséidon"}] }
+                { id: 'endurance', title: "Endurance", icon: "⏱️", stat: totalHours, color: "#4caf50", levels: [{t:1, n:"Passager (niv 1/6)"}, {t:5, n:"Hôte de l'air (niv 2/6)"}, {t:10, n:"Le temps d'un long courrier (niv 3/6)"}, {t:18, n:"Copilote (niv 4/6)"}, {t:30, n:"Commandant (niv 5/6)"}, {t:50, n:"Photon (niv max)"}] },
+                { id: 'globetrotter', title: "Globe-Trotter", icon: "🌍", stat: airportsSet.size, color: "#4caf50", levels: [{t:5, n:"Touriste (niv 1/5)"}, {t:15, n:"Voyageur (niv 2/5)"}, {t:40, n:"passionné d'aéroports (niv 3/5)"}, {t:80, n:"PDG Jet (niv 4/5)"}, {t:150, n:"Adicte à l'aviation (niv max)"}] },
+                { id: 'island', title: "Island Lover", icon: "🏝️", stat: islandsSet.size, color: "#4caf50", levels: [{t:2, n:"Saut de puce (niv 1/6)"}, {t:5, n:"Robinson Crusoé (niv 2/6)"}, {t:10, n:"Mousse (niv 3/6)"}, {t:18, n:"Capitaine de ferry (niv 4/6)"}, {t:25, n:"Pirate assidu (niv 5/6)"}, {t:40, n:"Roi des pirates (niv max)"}] },
+                { id: 'assiduite', title: "Assiduité", icon: "🔥", stat: logbook.length, color: "#4caf50", levels: [{t:5, n:"Battème de l'air (niv 1/6)"}, {t:18, n:"Apprenti pilote (niv 2/6)"}, {t:50, n:"Copilote (niv 3/6)"}, {t:100, n:"Pilote de ligne (niv 4/6)"}, {t:250, n:"Vétéran (niv 5/6)"}, {t:500, n:"Légende (niv max)"}] },
+                { id : 'country_hopper', title: "Citoyen du Monde", icon: "🛂", stat: countriesSet.size, color: "#4caf50", levels: [{t: 3, n: "Expatrié (niv 1/4)"}, {t: 12, n: "Président (niv 2/4)"}, {t: 30, n: "Diplomate (niv 3/4)"}, {t: 50, n: "Ambassadeur des Nations Unies (niv max)"}] },
+                { id: 'island_streak', title: "L'Appel du Large", icon: "🌊", stat: maxIslandStreak, color: "#4caf50", levels: [{t: 3, n: "Vrai Marin (niv 1/3)"}, {t: 6, n: "Légende des Mers (niv 2/3)"}, {t: 12, n: "Poséidon (niv max)"}] }
             ];
 
             let html = "";
