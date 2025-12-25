@@ -905,8 +905,8 @@
             }
         }
         document.addEventListener('visibilitychange', async () => { //relance le wakeLock et arrête de comptabiliser le temps (en mode srtict) si on quitte puis reviens sur la page
-            /*const isStrict = document.getElementById('strict-mode').checked;
-            if (!isStrict) return;  Permet de mettre le timer en pose seulement pendant le mode strict, si commenté le timer se met toujours en pause*/
+            const isStrict = document.getElementById('strict-mode').checked;
+            if (!isStrict) return;  /*Permet de mettre le timer en pose seulement pendant le mode strict, si commenté le timer se met toujours en pause*/
             const isFlying = document.getElementById('flight-screen').style.display === 'flex';
             if (!isFlying) return;
 
